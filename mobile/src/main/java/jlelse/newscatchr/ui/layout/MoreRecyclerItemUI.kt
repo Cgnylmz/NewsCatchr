@@ -20,6 +20,7 @@ package jlelse.newscatchr.ui.layout
 
 import android.graphics.Color
 import android.view.View
+import jlelse.newscatchr.extensions.button
 import jlelse.newscatchr.extensions.resStr
 import jlelse.newscatchr.ui.recycleritems.MoreRecyclerItem
 import jlelse.readit.R

@@ -23,6 +23,7 @@ import android.view.Gravity
 import android.view.View
 import jlelse.newscatchr.extensions.resClr
 import jlelse.newscatchr.extensions.setTextStyle
+import jlelse.newscatchr.extensions.textView
 import jlelse.newscatchr.ui.recycleritems.CustomTextRecyclerItem
 import jlelse.readit.R
 import org.jetbrains.anko.*

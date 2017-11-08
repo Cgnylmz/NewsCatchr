@@ -25,8 +25,11 @@ import android.widget.LinearLayout
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.JustifyContent
 import jlelse.newscatchr.extensions.flexboxLayout
+import jlelse.newscatchr.extensions.imageView
 import jlelse.newscatchr.extensions.resClr
 import jlelse.newscatchr.extensions.setTextStyle
+import jlelse.newscatchr.extensions.textView
+import jlelse.newscatchr.extensions.view
 import jlelse.newscatchr.ui.recycleritems.ArticleRecyclerItem
 import jlelse.readit.R
 import org.jetbrains.anko.*

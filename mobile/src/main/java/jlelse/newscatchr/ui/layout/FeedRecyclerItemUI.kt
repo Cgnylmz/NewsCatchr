@@ -22,8 +22,11 @@ import android.graphics.Typeface
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
+import jlelse.newscatchr.extensions.imageView
 import jlelse.newscatchr.extensions.resClr
 import jlelse.newscatchr.extensions.setTextStyle
+import jlelse.newscatchr.extensions.textView
+import jlelse.newscatchr.extensions.view
 import jlelse.newscatchr.ui.recycleritems.FeedRecyclerItem
 import jlelse.readit.R
 import org.jetbrains.anko.*

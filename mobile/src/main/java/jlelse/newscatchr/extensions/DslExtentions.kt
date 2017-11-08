@@ -18,7 +18,11 @@
 
 package jlelse.newscatchr.extensions
 
+import android.view.View
 import android.view.ViewManager
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.ui.views.SwipeRefreshLayout
 import jlelse.newscatchr.ui.views.ZoomTextView
@@ -27,3 +31,7 @@ import org.jetbrains.anko.custom.ankoView
 inline fun ViewManager.flexboxLayout(theme: Int = 0, init: FlexboxLayout.() -> Unit) = ankoView(::FlexboxLayout, theme, init)
 inline fun ViewManager.swipeRefreshLayout(theme: Int = 0, init: SwipeRefreshLayout.() -> Unit) = ankoView(::SwipeRefreshLayout, theme, init)
 inline fun ViewManager.zoomTextView(theme: Int = 0, init: ZoomTextView.() -> Unit) = ankoView(::ZoomTextView, theme, init)
+inline fun ViewManager.textView(theme: Int = 0, init: TextView.() -> Unit) = ankoView(::TextView, theme, init)
+inline fun ViewManager.imageView(theme: Int = 0, init: ImageView.() -> Unit) = ankoView(::ImageView, theme, init)
+inline fun ViewManager.view(theme: Int = 0, init: View.() -> Unit) = ankoView(::View, theme, init)
+inline fun ViewManager.button(theme: Int = 0, init: Button.() -> Unit) = ankoView(::Button, theme, init)

@@ -19,7 +19,6 @@
 package jlelse.newscatchr.ui.layout
 
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import jlelse.newscatchr.extensions.swipeRefreshLayout
 import jlelse.readit.R
@@ -34,7 +33,7 @@ class RefreshRecyclerUI : AnkoComponent<ViewManagerView> {
 			id = R.id.refreshrecyclerview_refresh
 			recyclerView {
 				id = R.id.refreshrecyclerview_recycler
-				layoutManager = LinearLayoutManager(context) as RecyclerView.LayoutManager?
+				layoutManager = LinearLayoutManager(context)
 			}
 		}
 	}

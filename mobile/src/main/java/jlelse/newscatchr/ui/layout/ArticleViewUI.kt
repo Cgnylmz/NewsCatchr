@@ -24,8 +24,10 @@ import android.view.View
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.JustifyContent
 import jlelse.newscatchr.extensions.flexboxLayout
+import jlelse.newscatchr.extensions.imageView
 import jlelse.newscatchr.extensions.setTextStyle
 import jlelse.newscatchr.extensions.swipeRefreshLayout
+import jlelse.newscatchr.extensions.textView
 import jlelse.newscatchr.extensions.zoomTextView
 import jlelse.newscatchr.ui.fragments.ArticleView
 import jlelse.readit.R
