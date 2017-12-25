@@ -20,6 +20,7 @@
 
 package jlelse.newscatchr.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.support.design.widget.Snackbar
@@ -30,7 +31,8 @@ import android.view.MenuItem
 import android.view.View
 import co.metalab.asyncawait.async
 import com.afollestad.materialdialogs.MaterialDialog
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.helpers.Database
@@ -44,10 +46,11 @@ import jlelse.readit.R
 import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.*
 
+@SuppressLint("ViewConstructor")
 class FeedView(val feed: Feed) : ViewManagerView() {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.refreshrecyclerview_recycler) }
-	private val fastAdapter = FastItemAdapter<ArticleRecyclerItem>()
+	private val articleAdapter = ItemAdapter<ArticleRecyclerItem>()
 	//private val footerAdapter = FooterAdapter<ProgressItem>()
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 	private var articles = mutableListOf<Article>()
@@ -63,7 +66,10 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 		fragmentView = RefreshRecyclerUI().createView(AnkoContext.create(context, this))
 		refreshOne?.setOnRefreshListener { loadArticles() }
 		//if (recyclerOne?.adapter == null) recyclerOne?.adapter = footerAdapter.wrap(fastAdapter)
-		if (recyclerOne?.adapter == null) recyclerOne?.adapter = fastAdapter
+		if (recyclerOne?.adapter == null) {
+			val adapter: FastAdapter<ArticleRecyclerItem> = FastAdapter.with(articleAdapter)
+			recyclerOne?.adapter = adapter
+		}
 		feedlyLoader = FeedlyLoader().apply {
 			type = FeedlyLoader.FeedTypes.FEED
 			feedUrl = "feed/" + feed.url()
@@ -89,7 +95,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 		}
 		if (articles.notNullAndEmpty()) {
 			recyclerOne?.clearOnScrollListeners()
-			fastAdapter.setNewList(articles.map { ArticleRecyclerItem(article = it, fragment = this@FeedView) })
+			articleAdapter.setNewList(articles.map { ArticleRecyclerItem(article = it, fragment = this@FeedView) })
 			/*recyclerOne?.addOnScrollListener(object : EndlessRecyclerOnScrollListener(footerAdapter) {
 				override fun onLoadMore(currentPage: Int) {
 					async {

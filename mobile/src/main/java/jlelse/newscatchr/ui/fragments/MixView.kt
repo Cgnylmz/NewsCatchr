@@ -20,13 +20,15 @@
 
 package jlelse.newscatchr.ui.fragments
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import co.metalab.asyncawait.async
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.loaders.FeedlyLoader
 import jlelse.newscatchr.extensions.nothingFound
@@ -38,10 +40,11 @@ import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 
+@SuppressLint("ViewConstructor")
 class MixView(val feedId: String) : ViewManagerView() {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.refreshrecyclerview_recycler) }
-	private var fastAdapter = FastItemAdapter<ArticleRecyclerItem>()
+	private var articleAdapter = ItemAdapter<ArticleRecyclerItem>()
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 	private var articles = listOf<Article>()
 	private var feedlyLoader: FeedlyLoader? = null
@@ -56,7 +59,10 @@ class MixView(val feedId: String) : ViewManagerView() {
 			type = FeedlyLoader.FeedTypes.MIX
 			feedUrl = feedId
 		}
-		if (recyclerOne?.adapter == null) recyclerOne?.adapter = fastAdapter
+		if (recyclerOne?.adapter == null) {
+			val adapter: FastAdapter<ArticleRecyclerItem> = FastAdapter.with(articleAdapter)
+			recyclerOne?.adapter = adapter
+		}
 		loadArticles(true)
 		return fragmentView
 	}
@@ -64,7 +70,7 @@ class MixView(val feedId: String) : ViewManagerView() {
 	private fun loadArticles(cache: Boolean = false) = async {
 		refreshOne?.showIndicator()
 		await { feedlyLoader?.items(cache)?.let { articles = it } }
-		if (!articles.isEmpty()) fastAdapter.setNewList(articles.map { ArticleRecyclerItem(article = it, fragment = this@MixView) })
+		if (!articles.isEmpty()) articleAdapter.setNewList(articles.map { ArticleRecyclerItem(article = it, fragment = this@MixView) })
 		else context.nothingFound { closeView() }
 		refreshOne?.hideIndicator()
 	}

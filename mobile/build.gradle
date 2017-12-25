@@ -61,7 +61,6 @@ kotlin {
 
 dependencies {
     implementation 'com.mikepenz:fastadapter:3.0.5'
-    implementation 'com.mikepenz:fastadapter-commons:3.0.5@aar'
     implementation 'com.mikepenz:fastadapter-extensions:3.0.5@aar'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation('com.afollestad:bridge:5.1.2') {

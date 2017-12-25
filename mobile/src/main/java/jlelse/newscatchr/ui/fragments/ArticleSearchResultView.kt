@@ -18,9 +18,11 @@
 
 package jlelse.newscatchr.ui.fragments
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.extensions.notNullAndEmpty
 import jlelse.newscatchr.ui.layout.BasicRecyclerUI
@@ -30,16 +32,20 @@ import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 
+@SuppressLint("ViewConstructor")
 class ArticleSearchResultView(val articles: List<Article>) : ViewManagerView() {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.basicrecyclerview_recycler) }
-	private var fastAdapter = FastItemAdapter<ArticleRecyclerItem>()
+	private var articleAdapter = ItemAdapter<ArticleRecyclerItem>()
 
 	override fun onCreateView(): View? {
 		super.onCreateView()
 		fragmentView = BasicRecyclerUI().createView(AnkoContext.create(context, this))
-		if (recyclerOne?.adapter == null) recyclerOne?.adapter = fastAdapter
-		if (articles.notNullAndEmpty()) fastAdapter.setNewList(articles.map { ArticleRecyclerItem(it, this@ArticleSearchResultView) })
+		if (recyclerOne?.adapter == null) {
+			val adapter: FastAdapter<ArticleRecyclerItem> = FastAdapter.with(articleAdapter)
+			recyclerOne?.adapter = adapter
+		}
+		if (articles.notNullAndEmpty()) articleAdapter.setNewList(articles.map { ArticleRecyclerItem(it, this@ArticleSearchResultView) })
 		return fragmentView
 	}
 }

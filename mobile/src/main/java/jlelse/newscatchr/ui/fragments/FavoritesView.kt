@@ -20,6 +20,7 @@
 
 package jlelse.newscatchr.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -44,6 +45,7 @@ import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 import java.util.*
 
+@SuppressLint("ViewConstructor")
 class FavoritesView : ViewManagerView(), ItemTouchCallback {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.refreshrecyclerview_recycler) }

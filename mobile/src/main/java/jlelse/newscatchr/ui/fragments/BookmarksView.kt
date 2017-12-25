@@ -20,13 +20,15 @@
 
 package jlelse.newscatchr.ui.fragments
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import co.metalab.asyncawait.async
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import jlelse.newscatchr.backend.helpers.Database
 import jlelse.newscatchr.backend.helpers.Preferences
 import jlelse.newscatchr.backend.loaders.PocketLoader
@@ -43,17 +45,22 @@ import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 
+@SuppressLint("ViewConstructor")
 class BookmarksView : ViewManagerView() {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.refreshrecyclerview_recycler) }
-	private var fastAdapter = FastItemAdapter<NCAbstractItem<*, *>>()
+	private val bookmarkAdapter = ItemAdapter<ArticleRecyclerItem>()
+	private val errorAdapter = ItemAdapter<CustomTextRecyclerItem>()
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 
 	override fun onCreateView(): View? {
 		super.onCreateView()
 		fragmentView = RefreshRecyclerUI().createView(AnkoContext.create(context, this))
 		refreshOne?.setOnRefreshListener { loadArticles() }
-		if (recyclerOne?.adapter == null) recyclerOne?.adapter = fastAdapter
+		if (recyclerOne?.adapter == null) {
+			val adapter: FastAdapter<NCAbstractItem<*, *>> = FastAdapter.with(listOf(bookmarkAdapter, errorAdapter))
+			recyclerOne?.adapter = adapter
+		}
 		loadArticles(true)
 		return fragmentView
 	}
@@ -61,13 +68,16 @@ class BookmarksView : ViewManagerView() {
 	fun loadArticles(cache: Boolean = false) = async {
 		refreshOne?.showIndicator()
 		val articles = await {
-			if (!cache && Preferences.pocketSync && !Preferences.pocketUserName.isNullOrBlank() && !Preferences.pocketAccessToken.isNullOrBlank()) {
+			if (!cache && Preferences.pocketSync && !Preferences.pocketUserName.isBlank() && !Preferences.pocketAccessToken.isBlank()) {
 				tryOrNull { Database.allBookmarks = PocketLoader().items()?.toTypedArray() ?: arrayOf() }
 			}
 			Database.allBookmarks
 		}
-		if (articles.notNullAndEmpty()) fastAdapter.setNewList(articles.map { ArticleRecyclerItem(it, this@BookmarksView) })
-		else fastAdapter.setNewList(listOf(CustomTextRecyclerItem(R.string.nothing_bookmarked.resStr())))
+		if (articles.notNullAndEmpty()) bookmarkAdapter.setNewList(articles.map { ArticleRecyclerItem(it, this@BookmarksView) })
+		else {
+			bookmarkAdapter.setNewList(listOf())
+			errorAdapter.setNewList(listOf(CustomTextRecyclerItem(R.string.nothing_bookmarked.resStr())))
+		}
 		refreshOne?.hideIndicator()
 	}
 
