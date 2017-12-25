@@ -44,7 +44,7 @@ import org.jetbrains.anko.find
 class MixView(val feedId: String) : ViewManagerView() {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.refreshrecyclerview_recycler) }
-	private var articleAdapter = ItemAdapter<ArticleRecyclerItem>()
+	private val articleAdapter = ItemAdapter<ArticleRecyclerItem>()
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 	private var articles = listOf<Article>()
 	private var feedlyLoader: FeedlyLoader? = null

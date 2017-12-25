@@ -33,6 +33,8 @@ import co.metalab.asyncawait.async
 import com.afollestad.materialdialogs.MaterialDialog
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter_extensions.items.ProgressItem
+import com.mikepenz.fastadapter_extensions.scroll.EndlessRecyclerOnScrollListener
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.helpers.Database
@@ -51,7 +53,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.refreshrecyclerview_recycler) }
 	private val articleAdapter = ItemAdapter<ArticleRecyclerItem>()
-	//private val footerAdapter = FooterAdapter<ProgressItem>()
+	private val footerAdapter = ItemAdapter<ProgressItem>()
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 	private var articles = mutableListOf<Article>()
 	private val favorite
@@ -65,9 +67,8 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 		super.onCreateView()
 		fragmentView = RefreshRecyclerUI().createView(AnkoContext.create(context, this))
 		refreshOne?.setOnRefreshListener { loadArticles() }
-		//if (recyclerOne?.adapter == null) recyclerOne?.adapter = footerAdapter.wrap(fastAdapter)
 		if (recyclerOne?.adapter == null) {
-			val adapter: FastAdapter<ArticleRecyclerItem> = FastAdapter.with(articleAdapter)
+			val adapter: FastAdapter<ArticleRecyclerItem> = FastAdapter.with(listOf(articleAdapter, footerAdapter))
 			recyclerOne?.adapter = adapter
 		}
 		feedlyLoader = FeedlyLoader().apply {
@@ -96,25 +97,25 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 		if (articles.notNullAndEmpty()) {
 			recyclerOne?.clearOnScrollListeners()
 			articleAdapter.setNewList(articles.map { ArticleRecyclerItem(article = it, fragment = this@FeedView) })
-			/*recyclerOne?.addOnScrollListener(object : EndlessRecyclerOnScrollListener(footerAdapter) {
+			recyclerOne?.addOnScrollListener(object : EndlessRecyclerOnScrollListener(footerAdapter) {
 				override fun onLoadMore(currentPage: Int) {
 					async {
 						val newArticles = await { feedlyLoader?.moreItems() }
 						continuation = feedlyLoader?.continuation
-						if (newArticles != null) {
+						if (newArticles != null && newArticles.isNotEmpty()) {
 							articles.addAll(newArticles)
-							fastAdapter.add(newArticles.map { ArticleRecyclerItem(article = it, fragment = this@FeedView) })
+							articleAdapter.add(newArticles.map { ArticleRecyclerItem(article = it, fragment = this@FeedView) })
 						}
 					}
 				}
-			})*/
+			})
 		} else context.nothingFound {
 			closeView()
 		}
 		refreshOne?.hideIndicator()
 	}
 
-	fun createHomeScreenShortcut(title: String, feedId: String) {
+	private fun createHomeScreenShortcut(title: String, feedId: String) {
 		Intent().apply {
 			@Suppress("DEPRECATION")
 			putExtras(bundleOf("duplicate" to false, Intent.EXTRA_SHORTCUT_INTENT to context.intentFor<MainActivity>("feedtitle" to title, "feedid" to feedId).newTask().clearTop(), Intent.EXTRA_SHORTCUT_NAME to title, Intent.EXTRA_SHORTCUT_ICON_RESOURCE to Intent.ShortcutIconResource.fromContext(context.applicationContext, R.mipmap.ic_launcher)))
@@ -193,12 +194,11 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 				MaterialDialog.Builder(context)
 						.title(R.string.edit_feed_title)
 						.input(null, feed.title, { _, input ->
-							if (!input.toString().isNullOrBlank()) {
+							if (!input.toString().isBlank()) {
 								Database.updateFavoriteTitle(feed.url(), input.toString())
 								feed.title = input.toString()
 								title = feed.title
-								val curActivity = context
-								if (curActivity is MainActivity) curActivity.refreshFragmentDependingTitle(this)
+								(context as? MainActivity)?.refreshFragmentDependingTitle(this)
 							}
 						})
 						.negativeText(android.R.string.cancel)
