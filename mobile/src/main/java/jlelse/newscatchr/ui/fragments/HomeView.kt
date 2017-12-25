@@ -28,7 +28,8 @@ import android.content.IntentFilter
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import co.metalab.asyncawait.async
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.apis.Feedly
 import jlelse.newscatchr.backend.helpers.Database
@@ -53,10 +54,17 @@ class HomeView : ViewManagerView(), FAB, FragmentManipulation {
 	private var recRelated: Array<String>? = null
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.homefragment_recyclerone) }
-	private val fastAdapterOne = FastItemAdapter<NCAbstractItem<*, *>>()
-	private val fastAdapterTwo = CustomOrderAdapter<NCAbstractItem<*, *>>(order = 600)
-	private val fastAdapterThree = CustomOrderAdapter<NCAbstractItem<*, *>>(order = 700)
-	private val fastAdapterFour = CustomOrderAdapter<NCAbstractItem<*, *>>(order = 800)
+
+	private val lastHeaderAdapter = ItemAdapter<HeaderRecyclerItem>()
+	private val lastAdapter = ItemAdapter<FeedRecyclerItem>()
+	private val lastFooterAdapter = ItemAdapter<MoreRecyclerItem>()
+	private val favoriteHeaderAdapter = ItemAdapter<HeaderRecyclerItem>()
+	private val favoriteAdapter = ItemAdapter<FeedRecyclerItem>()
+	private val favoriteFooterAdapter = ItemAdapter<MoreRecyclerItem>()
+	private val recommendedHeaderAdapter = ItemAdapter<HeaderRecyclerItem>()
+	private val recommendedAdapter = ItemAdapter<FeedRecyclerItem>()
+	private val recommendedFooterAdapter = ItemAdapter<MoreRecyclerItem>()
+	private val recommendedTagsAdapter = ItemAdapter<TagsRecyclerItem>()
 	private val refresh: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.homefragment_refresh) }
 	private var feedStateUpdateReceiver: FeedStateUpdateReceiver? = null
 	private var lastFeedReceiverRegistered = false
@@ -83,37 +91,46 @@ class HomeView : ViewManagerView(), FAB, FragmentManipulation {
 	}
 
 	private fun loadAll(cache: Boolean = true) {
-		if (recyclerOne?.adapter == null) recyclerOne?.adapter = fastAdapterFour.wrap(fastAdapterThree.wrap(fastAdapterTwo.wrap(fastAdapterOne)))
+		if (recyclerOne?.adapter == null) {
+			val adapter: FastAdapter<NCAbstractItem<*, *>> = FastAdapter.with(listOf(lastHeaderAdapter, lastAdapter, lastFooterAdapter, favoriteHeaderAdapter, favoriteAdapter, favoriteFooterAdapter, recommendedHeaderAdapter, recommendedAdapter, recommendedFooterAdapter, recommendedTagsAdapter))
+			recyclerOne?.adapter = adapter
+		}
 		loadLastFeeds()
 		loadFavoriteFeeds()
 		loadRecommendedFeeds(cache)
 	}
 
 	private fun loadLastFeeds() = async {
-		fastAdapterOne.setNewList(listOf())
+		lastHeaderAdapter.setNewList(listOf())
+		lastAdapter.setNewList(listOf())
+		lastFooterAdapter.setNewList(listOf())
 		if (Preferences.showRecentFeeds) {
 			val lastFeeds = await { Database.allLastFeeds.takeLast(5).reversed() }
 			if (lastFeeds.notNullAndEmpty()) {
-				fastAdapterOne.add(HeaderRecyclerItem(title = R.string.last_feeds.resStr()!!))
-				fastAdapterOne.add(lastFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == lastFeeds.lastIndex) })
-				fastAdapterOne.add(MoreRecyclerItem { openView(FeedListView(feeds = Database.allLastFeeds.reversed().toTypedArray()).withTitle(R.string.last_feeds.resStr())) })
+				lastHeaderAdapter.add(HeaderRecyclerItem(title = R.string.last_feeds.resStr()!!))
+				lastAdapter.add(lastFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == lastFeeds.lastIndex) })
+				lastFooterAdapter.add(MoreRecyclerItem { openView(FeedListView(feeds = Database.allLastFeeds.reversed().toTypedArray()).withTitle(R.string.last_feeds.resStr())) })
 			}
 		}
 	}
 
 	private fun loadFavoriteFeeds() = async {
-		fastAdapterTwo.setNewList(listOf())
+		favoriteHeaderAdapter.setNewList(listOf())
+		favoriteAdapter.setNewList(listOf())
+		favoriteFooterAdapter.setNewList(listOf())
 		val favoriteFeeds = await { Database.allFavorites.take(5) }
 		if (favoriteFeeds.notNullAndEmpty()) {
-			fastAdapterTwo.add(HeaderRecyclerItem(title = R.string.favorites.resStr()!!))
-			fastAdapterTwo.add(favoriteFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == favoriteFeeds.lastIndex) })
-			fastAdapterTwo.add(MoreRecyclerItem { openView(FavoritesView().withTitle(R.string.favorites.resStr())) })
+			favoriteHeaderAdapter.add(HeaderRecyclerItem(title = R.string.favorites.resStr()!!))
+			favoriteAdapter.add(favoriteFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == favoriteFeeds.lastIndex) })
+			favoriteFooterAdapter.add(MoreRecyclerItem { openView(FavoritesView().withTitle(R.string.favorites.resStr())) })
 		}
 	}
 
 	private fun loadRecommendedFeeds(cache: Boolean = false) = async {
-		fastAdapterThree.setNewList(listOf())
-		fastAdapterFour.setNewList(listOf())
+		recommendedHeaderAdapter.setNewList(listOf())
+		recommendedAdapter.setNewList(listOf())
+		recommendedFooterAdapter.setNewList(listOf())
+		recommendedTagsAdapter.setNewList(listOf())
 		if (Preferences.showRecommendedFeeds) {
 			refresh?.showIndicator()
 			await {
@@ -124,13 +141,13 @@ class HomeView : ViewManagerView(), FAB, FragmentManipulation {
 			}
 			val tempRecFeeds = recFeeds?.take(15)
 			if (recFeeds.notNullAndEmpty() && tempRecFeeds != null) {
-				fastAdapterThree.add(HeaderRecyclerItem(title = R.string.recommendations.resStr()!!))
-				fastAdapterThree.add(tempRecFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == tempRecFeeds.lastIndex) })
-				fastAdapterThree.add(listOf(MoreRecyclerItem {
+				recommendedHeaderAdapter.add(HeaderRecyclerItem(title = R.string.recommendations.resStr()!!))
+				recommendedAdapter.add(tempRecFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == tempRecFeeds.lastIndex) })
+				recommendedFooterAdapter.add(listOf(MoreRecyclerItem {
 					openView(FeedListView(feeds = recFeeds, tags = recRelated).withTitle(R.string.recommendations.resStr()))
 				}))
 			}
-			if (recRelated.notNullAndEmpty()) fastAdapterFour.add(TagsRecyclerItem(recRelated, this@HomeView))
+			if (recRelated.notNullAndEmpty()) recommendedTagsAdapter.add(TagsRecyclerItem(recRelated, this@HomeView))
 			refresh?.hideIndicator()
 		}
 	}

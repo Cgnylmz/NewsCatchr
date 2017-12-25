@@ -24,7 +24,8 @@ import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter_extensions.drag.ItemTouchCallback
 import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback
 import com.mikepenz.fastadapter_extensions.utilities.DragDropUtil
@@ -46,7 +47,8 @@ import java.util.*
 class FavoritesView : ViewManagerView(), ItemTouchCallback {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.refreshrecyclerview_recycler) }
-	private var fastAdapter = FastItemAdapter<NCAbstractItem<*, *>>()
+	private val feedAdapter = ItemAdapter<FeedRecyclerItem>()
+	private val errorAdapter = ItemAdapter<CustomTextRecyclerItem>()
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 	private var feeds: MutableList<Feed>? = null
 
@@ -54,7 +56,10 @@ class FavoritesView : ViewManagerView(), ItemTouchCallback {
 		super.onCreateView()
 		fragmentView = RefreshRecyclerUI().createView(AnkoContext.create(context, this))
 		ItemTouchHelper(SimpleDragCallback(this)).attachToRecyclerView(recyclerOne)
-		if (recyclerOne?.adapter == null) recyclerOne?.adapter = fastAdapter
+		if (recyclerOne?.adapter == null) {
+			val adapter: FastAdapter<NCAbstractItem<*, *>> = FastAdapter.with(listOf(feedAdapter, errorAdapter))
+			recyclerOne?.adapter = adapter
+		}
 		refreshOne?.setOnRefreshListener { load() }
 		load()
 		return fragmentView
@@ -62,13 +67,16 @@ class FavoritesView : ViewManagerView(), ItemTouchCallback {
 
 	private fun load() {
 		feeds = Database.allFavorites.toMutableList()
-		if (feeds.notNullAndEmpty()) fastAdapter.setNewList(feeds?.map { FeedRecyclerItem(it, fragment = this@FavoritesView) })
-		else fastAdapter.setNewList(listOf(CustomTextRecyclerItem(R.string.nothing_marked_favorite.resStr())))
+		if (feeds?.notNullAndEmpty() == true) feedAdapter.setNewList(feeds!!.map { FeedRecyclerItem(it, fragment = this@FavoritesView) })
+		else {
+			feedAdapter.setNewList(listOf())
+			errorAdapter.setNewList(listOf(CustomTextRecyclerItem(R.string.nothing_marked_favorite.resStr())))
+		}
 		refreshOne?.hideIndicator()
 	}
 
 	override fun itemTouchOnMove(oldPosition: Int, newPosition: Int): Boolean {
-		DragDropUtil.onMove(fastAdapter, oldPosition, newPosition)
+		DragDropUtil.onMove(feedAdapter, oldPosition, newPosition)
 		Collections.swap(feeds, oldPosition, newPosition)
 		feeds?.let { Database.allFavorites = it.toTypedArray() }
 		context.sendBroadcast(Intent("feed_state"))

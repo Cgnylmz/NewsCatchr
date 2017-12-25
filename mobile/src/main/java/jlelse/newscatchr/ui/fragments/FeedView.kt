@@ -30,10 +30,7 @@ import android.view.MenuItem
 import android.view.View
 import co.metalab.asyncawait.async
 import com.afollestad.materialdialogs.MaterialDialog
-import com.mikepenz.fastadapter.adapters.FooterAdapter
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
-import com.mikepenz.fastadapter_extensions.items.ProgressItem
-import com.mikepenz.fastadapter_extensions.scroll.EndlessRecyclerOnScrollListener
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.helpers.Database
@@ -51,7 +48,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.refreshrecyclerview_recycler) }
 	private val fastAdapter = FastItemAdapter<ArticleRecyclerItem>()
-	private val footerAdapter = FooterAdapter<ProgressItem>()
+	//private val footerAdapter = FooterAdapter<ProgressItem>()
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 	private var articles = mutableListOf<Article>()
 	private val favorite
@@ -65,7 +62,8 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 		super.onCreateView()
 		fragmentView = RefreshRecyclerUI().createView(AnkoContext.create(context, this))
 		refreshOne?.setOnRefreshListener { loadArticles() }
-		if (recyclerOne?.adapter == null) recyclerOne?.adapter = footerAdapter.wrap(fastAdapter)
+		//if (recyclerOne?.adapter == null) recyclerOne?.adapter = footerAdapter.wrap(fastAdapter)
+		if (recyclerOne?.adapter == null) recyclerOne?.adapter = fastAdapter
 		feedlyLoader = FeedlyLoader().apply {
 			type = FeedlyLoader.FeedTypes.FEED
 			feedUrl = "feed/" + feed.url()
@@ -92,7 +90,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 		if (articles.notNullAndEmpty()) {
 			recyclerOne?.clearOnScrollListeners()
 			fastAdapter.setNewList(articles.map { ArticleRecyclerItem(article = it, fragment = this@FeedView) })
-			recyclerOne?.addOnScrollListener(object : EndlessRecyclerOnScrollListener(footerAdapter) {
+			/*recyclerOne?.addOnScrollListener(object : EndlessRecyclerOnScrollListener(footerAdapter) {
 				override fun onLoadMore(currentPage: Int) {
 					async {
 						val newArticles = await { feedlyLoader?.moreItems() }
@@ -103,7 +101,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 						}
 					}
 				}
-			})
+			})*/
 		} else context.nothingFound {
 			closeView()
 		}
