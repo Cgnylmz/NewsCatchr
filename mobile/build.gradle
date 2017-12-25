@@ -63,7 +63,7 @@ dependencies {
     implementation 'com.mikepenz:fastadapter:2.6.3'
     implementation 'com.mikepenz:fastadapter-commons:2.6.3@aar'
     implementation 'com.mikepenz:fastadapter-extensions:2.6.3@aar'
-    implementation 'com.afollestad.material-dialogs:core:0.9.5.0'
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation('com.afollestad:bridge:5.1.2') {
         exclude group: 'org.json', module: 'json'
         exclude group: 'com.intellij', module: 'annotations'
@@ -72,17 +72,13 @@ dependencies {
         exclude group: 'org.json', module: 'json'
         exclude group: 'com.intellij', module: 'annotations'
     }
-    implementation 'com.github.bumptech.glide:glide:4.3.1'
+    implementation 'com.github.bumptech.glide:glide:4.4.0'
     implementation 'com.google.android:flexbox:0.3.1'
-    implementation 'com.evernote:android-job:1.2.0'
-    implementation 'org.jsoup:jsoup:1.11.1'
+    implementation 'com.evernote:android-job:1.2.1'
+    implementation 'org.jsoup:jsoup:1.11.2'
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
     implementation 'me.zhanghai.android.customtabshelper:library:1.0.4'
     implementation 'com.github.faruktoptas:FancyShowCaseView:1.0.0'
-    // Firebase
-    implementation "com.google.firebase:firebase-core:$PLAY_SERVICES"
-    implementation "com.google.firebase:firebase-crash:$PLAY_SERVICES"
-    implementation "com.google.firebase:firebase-analytics:$PLAY_SERVICES"
     // Support libraries
     implementation "com.android.support:support-v4:$SUPPORT_LIBS"
     implementation "com.android.support:appcompat-v7:$SUPPORT_LIBS"
@@ -106,5 +102,3 @@ dependencies {
     implementation project(':viewmanager')
     implementation project(':simplekos')
 }
-
-apply plugin: 'com.google.gms.google-services'

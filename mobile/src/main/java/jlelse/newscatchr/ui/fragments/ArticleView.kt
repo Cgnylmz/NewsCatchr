@@ -36,7 +36,6 @@ import jlelse.newscatchr.backend.apis.fetchArticle
 import jlelse.newscatchr.backend.apis.openUrl
 import jlelse.newscatchr.backend.helpers.Database
 import jlelse.newscatchr.backend.helpers.Preferences
-import jlelse.newscatchr.backend.helpers.Tracking
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.interfaces.FAB
 import jlelse.newscatchr.ui.layout.ArticleViewUI
@@ -78,7 +77,6 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 		showArticle(article)
 		if (Preferences.readability) readability()
 		Database.addReadUrl(article.url)
-		Tracking.track(type = Tracking.TYPE.ARTICLE, url = article.url)
 		return fragmentView
 	}
 

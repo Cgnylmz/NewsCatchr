@@ -46,7 +46,7 @@ fun cancelSync() {
 }
 
 class SyncJob : Job() {
-	override fun onRunJob(params: Params?): Result {
+	override fun onRunJob(params: Params): Result {
 		return if (sync(context) != null) Result.SUCCESS else Result.RESCHEDULE
 	}
 

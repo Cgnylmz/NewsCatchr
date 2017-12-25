@@ -40,7 +40,6 @@ import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.apis.fetchArticle
 import jlelse.newscatchr.backend.apis.share
 import jlelse.newscatchr.backend.helpers.Preferences
-import jlelse.newscatchr.backend.helpers.Tracking
 import jlelse.newscatchr.customTabsHelperFragment
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.lastTab
@@ -93,8 +92,6 @@ class MainActivity : ViewManagerActivity() {
 		MainActivityUI().setContentView(this)
 		super.onCreate(savedInstanceState)
 		doAsync {
-			// Init Tracking
-			Tracking.init(this@MainActivity)
 			// Init Custom Tabs
 			customTabsHelperFragment = CustomTabsHelperFragment.attachTo(this@MainActivity)
 			// Check purchases

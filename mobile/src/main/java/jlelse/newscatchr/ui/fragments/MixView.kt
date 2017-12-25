@@ -28,7 +28,6 @@ import android.view.View
 import co.metalab.asyncawait.async
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter
 import jlelse.newscatchr.backend.Article
-import jlelse.newscatchr.backend.helpers.Tracking
 import jlelse.newscatchr.backend.loaders.FeedlyLoader
 import jlelse.newscatchr.extensions.nothingFound
 import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
@@ -59,7 +58,6 @@ class MixView(val feedId: String) : ViewManagerView() {
 		}
 		if (recyclerOne?.adapter == null) recyclerOne?.adapter = fastAdapter
 		loadArticles(true)
-		Tracking.track(type = Tracking.TYPE.MIX, url = feedId)
 		return fragmentView
 	}
 

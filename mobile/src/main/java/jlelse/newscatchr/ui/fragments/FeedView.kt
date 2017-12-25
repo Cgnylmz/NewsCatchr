@@ -37,7 +37,6 @@ import com.mikepenz.fastadapter_extensions.scroll.EndlessRecyclerOnScrollListene
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.helpers.Database
-import jlelse.newscatchr.backend.helpers.Tracking
 import jlelse.newscatchr.backend.loaders.FeedlyLoader
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.activities.MainActivity
@@ -77,7 +76,6 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 			}
 		}
 		loadArticles(true)
-		Tracking.track(type = Tracking.TYPE.FEED, url = feed.url())
 		Database.addLastFeed(feed)
 		context.sendBroadcast(Intent("feed_state"))
 		return fragmentView
