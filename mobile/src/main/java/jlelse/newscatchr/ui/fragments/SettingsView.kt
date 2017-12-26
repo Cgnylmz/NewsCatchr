@@ -18,12 +18,14 @@
 
 package jlelse.newscatchr.ui.fragments
 
+import android.annotation.SuppressLint
 import android.view.View
 import jlelse.newscatchr.ui.layout.SettingsViewUI
 import jlelse.readit.R
 import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 
+@SuppressLint("ViewConstructor")
 class SettingsView : ViewManagerView() {
 	private val settingsFragment by lazy { context.supportFragmentManager.findFragmentById(R.id.settings_fragment) as SettingsFragment }
 
@@ -32,7 +34,7 @@ class SettingsView : ViewManagerView() {
 		return SettingsViewUI().createView(AnkoContext.create(context, this))
 	}
 
-	fun finishPocketAuth(){
+	fun finishPocketAuth() {
 		settingsFragment.progressDialog.show()
 		settingsFragment.pocketAuth?.authenticate()
 	}

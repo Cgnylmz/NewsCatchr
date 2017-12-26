@@ -21,7 +21,6 @@
 package jlelse.newscatchr.backend.apis
 
 import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.support.design.widget.Snackbar
 import co.metalab.asyncawait.async
@@ -35,6 +34,7 @@ import jlelse.newscatchr.extensions.resStr
 import jlelse.newscatchr.extensions.tryOrNull
 import jlelse.newscatchr.mainAcivity
 import jlelse.readit.R
+import org.jetbrains.anko.clipboardManager
 
 class BackupApi(val context: Context) {
 
@@ -52,8 +52,7 @@ class BackupApi(val context: Context) {
 						.title(R.string.suc_backup)
 						.content(R.string.restore_key_desc)
 						.input(R.string.restore_key.resStr(), key) { _, _ ->
-							val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-							clipboard.primaryClip = ClipData.newPlainText(R.string.restore_key.resStr(), key)
+							context.clipboardManager.primaryClip = ClipData.newPlainText(R.string.restore_key.resStr(), key)
 						}
 						.negativeText(android.R.string.cancel)
 						.positiveText(android.R.string.copy)

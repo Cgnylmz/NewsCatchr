@@ -45,12 +45,12 @@ object Database {
 	private fun Feed?.safeFavorite() = this != null && !this.url().isNullOrBlank()
 
 	var allFavorites: Array<Feed>
-		get() = favoritesStore.read(FAVORITES, Array<Feed>::class.java) ?: arrayOf<Feed>()
+		get() = favoritesStore.read(FAVORITES, Array<Feed>::class.java) ?: arrayOf()
 		set(value) {
 			tryOrNull { favoritesStore.write<Array<Feed>>(FAVORITES, value.filter { it.safeFavorite() }.distinctBy { it.url() }.toTypedArray()) }
 		}
 
-	val allFavoritesUrls
+	private val allFavoritesUrls
 		get() = allFavorites.map { it.url() }
 
 	fun addFavorites(vararg feeds: Feed?) {
@@ -72,12 +72,12 @@ object Database {
 	private fun Article?.safeBookmark() = this != null && !this.url.isNullOrBlank()
 
 	var allBookmarks: Array<Article>
-		get() = bookmarksStore.read(BOOKMARKS, Array<Article>::class.java) ?: arrayOf<Article>()
+		get() = bookmarksStore.read(BOOKMARKS, Array<Article>::class.java) ?: arrayOf()
 		set(value) {
 			tryOrNull { bookmarksStore.write<Array<Article>>(BOOKMARKS, value.filter { it.safeBookmark() }.distinctBy { it.url }.toTypedArray()) }
 		}
 
-	val allBookmarkUrls
+	private val allBookmarkUrls
 		get() = allBookmarks.map { it.url }
 
 	private fun addBookmarks(vararg articles: Article?) {
@@ -86,7 +86,7 @@ object Database {
 
 	fun addBookmark(article: Article?) {
 		tryOrNull(execute = article.safeBookmark()) {
-			if (Preferences.pocketSync && !Preferences.pocketUserName.isNullOrBlank() && !Preferences.pocketAccessToken.isNullOrBlank()) {
+			if (Preferences.pocketSync && !Preferences.pocketUserName.isBlank() && !Preferences.pocketAccessToken.isBlank()) {
 				async {
 					article?.let { article ->
 						await { article.pocketId = PocketHandler().addToPocket(article) }
@@ -102,7 +102,7 @@ object Database {
 
 	fun deleteBookmark(url: String?) {
 		tryOrNull(execute = !url.isNullOrBlank()) {
-			if (Preferences.pocketSync && !Preferences.pocketUserName.isNullOrBlank() && !Preferences.pocketAccessToken.isNullOrBlank())
+			if (Preferences.pocketSync && !Preferences.pocketUserName.isBlank() && !Preferences.pocketAccessToken.isBlank())
 				allBookmarks.filter { it.url == url }.forEach {
 					if (it.fromPocket) async { await { PocketHandler().archiveOnPocket(it) } }
 				}
@@ -111,9 +111,9 @@ object Database {
 	}
 
 	var allReadUrls: Array<String>
-		get() = readUrlsStore.read(READ_URLS, Array<String>::class.java) ?: arrayOf<String>()
+		get() = readUrlsStore.read(READ_URLS, Array<String>::class.java) ?: arrayOf()
 		set(value) {
-			tryOrNull { readUrlsStore.write<Array<String>>(READ_URLS, value.filterNotNull().distinct().toTypedArray()) }
+			tryOrNull { readUrlsStore.write<Array<String>>(READ_URLS, value.distinct().toTypedArray()) }
 		}
 
 	fun addReadUrl(url: String?) = url?.let { allReadUrls += it }
@@ -121,9 +121,9 @@ object Database {
 	private fun Feed?.safeLastFeed() = this != null && !this.url().isNullOrBlank()
 
 	var allLastFeeds: Array<Feed>
-		get() = lastFeedsStore.read(LAST_FEEDS, Array<Feed>::class.java) ?: arrayOf<Feed>()
+		get() = lastFeedsStore.read(LAST_FEEDS, Array<Feed>::class.java) ?: arrayOf()
 		set(value) {
-			tryOrNull { lastFeedsStore.write<Array<Feed>>(LAST_FEEDS, value.filterNotNull().filter { it.safeLastFeed() }.toTypedArray()) }
+			tryOrNull { lastFeedsStore.write<Array<Feed>>(LAST_FEEDS, value.filter { it.safeLastFeed() }.toTypedArray()) }
 		}
 
 	fun addLastFeed(feed: Feed?) {
