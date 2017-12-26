@@ -27,32 +27,33 @@ import jlelse.newscatchr.backend.helpers.saveToCache
 import jlelse.newscatchr.extensions.tryOrNull
 import java.util.*
 
-@Keep class Feedly {
+@Keep
+class Feedly {
 
-	private val BASE_URL = "https://cloud.feedly.com/v3"
-	private val STREAM_ID = "streamId="
-	private val CONTINUATION = "continuation="
-	private val COUNT = "count="
-	private val RANKED = "ranked="
-	private val QUERY = "query="
+	private val urlBase = "https://cloud.feedly.com/v3"
+	private val urlStreamId = "streamId="
+	private val urlContinuation = "continuation="
+	private val urlCount = "count="
+	private val urlRanked = "ranked="
+	private val urlQuery = "query="
 
 	fun streamIds(id: String?, count: Int? = null, continuation: String? = null, ranked: String? = null): Ids? = tryOrNull {
-		var url = "$BASE_URL/streams/ids?$STREAM_ID%s"
-		if (count != null) url += "&$COUNT$count"
-		if (!continuation.isNullOrBlank()) url += "&$CONTINUATION$continuation"
-		if (!ranked.isNullOrBlank()) url += "&$RANKED$ranked"
+		var url = "$urlBase/streams/ids?$urlStreamId%s"
+		if (count != null) url += "&$urlCount$count"
+		if (!continuation.isNullOrBlank()) url += "&$urlContinuation$continuation"
+		if (!ranked.isNullOrBlank()) url += "&$urlRanked$ranked"
 		Bridge.get(url, id).asClass(Ids::class.java)
 	}
 
 	fun mixIds(id: String?, count: Int? = null): Ids? = tryOrNull {
-		var url = "$BASE_URL/mixes/ids?$STREAM_ID%s"
-		if (count != null) url += "&$COUNT$count"
+		var url = "$urlBase/mixes/ids?$urlStreamId%s"
+		if (count != null) url += "&$urlCount$count"
 		Bridge.get(url, id).asClass(Ids::class.java)
 	}
 
 	fun entries(ids: List<String>): List<Article>? = tryOrNull {
 		if (ids.isNotEmpty()) {
-			Bridge.post("$BASE_URL/entries/.mget").body(ids).asClassList(Article::class.java)
+			Bridge.post("$urlBase/entries/.mget").body(ids).asClassList(Article::class.java)
 		} else null
 	}
 
@@ -60,8 +61,8 @@ import java.util.*
 		var feeds: Array<Feed>? = null
 		var related: Array<String>? = null
 		tryOrNull {
-			var url = "$BASE_URL/search/feeds?$QUERY%s"
-			if (count != null) url += "&$COUNT$count"
+			var url = "$urlBase/search/feeds?$urlQuery%s"
+			if (count != null) url += "&$urlCount$count"
 			if (!locale.isNullOrBlank()) url += "&locale=$locale"
 			if (promoted != null) url += "&promoted=$promoted"
 			val search = Bridge.get(url, query).asClass(FeedSearch::class.java)
@@ -86,13 +87,18 @@ import java.util.*
 	}
 
 	fun articleSearch(id: String?, query: String?): ArticleSearch? = tryOrNull {
-		val url = "$BASE_URL/search/contents?$STREAM_ID%s&$QUERY%s&ct=feedly.desktop"
+		val url = "$urlBase/search/contents?$urlStreamId%s&$urlQuery%s&ct=feedly.desktop"
 		Bridge.get(url, id, query).asClass(ArticleSearch::class.java)
 	}
 
-	@Keep class Ids(var ids: Array<String>? = null, var continuation: String? = null)
-	@Keep class FeedSearch(var results: Array<Feed>? = null, var related: Array<String>? = null)
-	@Keep class ArticleSearch(var id: String? = null, var title: String? = null, var items: List<Article>? = null)
+	@Keep
+	class Ids(var ids: Array<String>? = null, var continuation: String? = null)
+
+	@Keep
+	class FeedSearch(var results: Array<Feed>? = null, var related: Array<String>? = null)
+
+	@Keep
+	class ArticleSearch(var id: String? = null, var title: String? = null, var items: List<Article>? = null)
 
 }
 

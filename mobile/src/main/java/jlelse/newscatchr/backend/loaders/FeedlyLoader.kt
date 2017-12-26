@@ -24,7 +24,6 @@ import jlelse.newscatchr.backend.helpers.getCachedArticle
 import jlelse.newscatchr.backend.helpers.isArticleCached
 import jlelse.newscatchr.backend.helpers.readFromCache
 import jlelse.newscatchr.backend.helpers.saveToCache
-import jlelse.newscatchr.extensions.notNullAndEmpty
 
 class FeedlyLoader {
 	var type: FeedTypes? = null
@@ -69,7 +68,7 @@ class FeedlyLoader {
 			continuation = ids?.continuation
 			itemsByIds(ids?.ids, cache)
 		}
-		FeedTypes.SEARCH -> Feedly().articleSearch(feedUrl, query)?.items?.filterNotNull()
+		FeedTypes.SEARCH -> Feedly().articleSearch(feedUrl, query)?.items
 		else -> null
 	}?.onEach { it.process().saveToCache() }
 
@@ -82,14 +81,14 @@ class FeedlyLoader {
 			}?.ids, true
 	)?.onEach { it.process().saveToCache() }
 
-	private fun itemsByIds(ids: Array<String>?, cache: Boolean): List<Article>? = if (ids.notNullAndEmpty()) {
-		ids?.filterNotNull()?.filter { if (cache) !isArticleCached(it) else true }?.let {
+	private fun itemsByIds(ids: Array<String>?, cache: Boolean): List<Article>? = if (ids != null && ids.isNotEmpty()) {
+		ids.filter { if (cache) !isArticleCached(it) else true }.let {
 			Feedly().entries(it)?.forEach { it.saveToCache() }
 		}
-		ids?.filterNotNull()?.map { getCachedArticle(it) }?.filterNotNull()
+		ids.mapNotNull { getCachedArticle(it) }
 	} else null
 
-	enum class FeedTypes {FEED, SEARCH, MIX }
-	enum class Ranked {NEWEST, OLDEST }
+	enum class FeedTypes { FEED, SEARCH, MIX }
+	enum class Ranked { NEWEST, OLDEST }
 
 }

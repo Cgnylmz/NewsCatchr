@@ -30,5 +30,5 @@ class PocketLoader {
 				pocketId = it.item_id,
 				fromPocket = true
 		).process()
-	}?.filterNotNull()
+	}
 }

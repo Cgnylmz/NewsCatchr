@@ -31,8 +31,10 @@ import org.jetbrains.anko.doAsync
  */
 class Pocket {
 
+	private val pocketBase = "https://getpocket.com"
+
 	fun add(url: String): String? = tryOrNull {
-		Bridge.post("https://getpocket.com/v3/add")
+		Bridge.post("$pocketBase/v3/add")
 				.header("Host", "getpocket.com")
 				.contentType("application/json; charset=UTF-8")
 				.header("X-Accept", "application/json")
@@ -44,7 +46,7 @@ class Pocket {
 
 	fun archive(itemId: String) {
 		tryOrNull {
-			Bridge.post("https://getpocket.com/v3/send")
+			Bridge.post("$pocketBase/v3/send")
 					.header("Host", "getpocket.com")
 					.contentType("application/json; charset=UTF-8")
 					.header("X-Accept", "application/json")
@@ -58,7 +60,7 @@ class Pocket {
 
 	fun get(): Array<GetResponseItem>? = tryOrNull {
 		mutableListOf<GetResponseItem>().apply {
-			Bridge.post("https://getpocket.com/v3/get")
+			Bridge.post("$pocketBase/v3/get")
 					.header("Host", "getpocket.com")
 					.contentType("application/json; charset=UTF-8")
 					.header("X-Accept", "application/json")
@@ -68,7 +70,7 @@ class Pocket {
 					?.asJsonObject()
 					?.optJSONObject("list")
 					?.let {
-						for (i in 0..(it.names()?.length() ?: 1) - 1) {
+						for (i in 0 until (it.names()?.length() ?: 1)) {
 							(it.get(it.names().getString(i))?.toString() ?: "").let {
 								add(Ason.deserialize(it, GetResponseItem::class.java))
 							}
@@ -78,7 +80,8 @@ class Pocket {
 	}
 }
 
-@Keep class GetResponseItem(
+@Keep
+class GetResponseItem(
 		var item_id: String? = null,
 		var given_url: String? = null,
 		var resolved_title: String? = null,
@@ -90,15 +93,16 @@ class Pocket {
 /**
  * Everything can be called from UI thread
  */
-class PocketAuth(val pocketRedirectUri: String, val pocketCallback: PocketAuthCallback) {
+class PocketAuth(private val pocketRedirectUri: String, private val pocketCallback: PocketAuthCallback) {
 	private var pocketCode: String? = null
 	private var accessToken: String? = null
 	private var userName: String? = null
+	private val pocketBase = "https://getpocket.com"
 
 	fun startAuth() {
 		doAsync {
 			try {
-				Bridge.post("https://getpocket.com/v3/oauth/request")
+				Bridge.post("$pocketBase/v3/oauth/request")
 						.header("Host", "getpocket.com")
 						.contentType("application/json; charset=UTF-8")
 						.header("X-Accept", "application/json")
@@ -111,7 +115,7 @@ class PocketAuth(val pocketRedirectUri: String, val pocketCallback: PocketAuthCa
 								else -> authorize(it.asAsonObject()?.getString("code") ?: "")
 							}
 						}
-			} catch(exception: Exception) {
+			} catch (exception: Exception) {
 				pocketCallback.failed()
 			}
 		}
@@ -121,7 +125,7 @@ class PocketAuth(val pocketRedirectUri: String, val pocketCallback: PocketAuthCa
 		pocketCode = code.apply {
 			if (isNullOrBlank()) pocketCallback.failed()
 		}
-		pocketCallback.authorize("https://getpocket.com/auth/authorize?request_token=$code&redirect_uri=$pocketRedirectUri")
+		pocketCallback.authorize("$pocketBase/auth/authorize?request_token=$code&redirect_uri=$pocketRedirectUri")
 	}
 
 	fun authenticate() {
@@ -129,7 +133,7 @@ class PocketAuth(val pocketRedirectUri: String, val pocketCallback: PocketAuthCa
 		else {
 			doAsync {
 				try {
-					Bridge.post("https://getpocket.com/v3/oauth/authorize")
+					Bridge.post("$pocketBase/v3/oauth/authorize")
 							.header("Host", "getpocket.com")
 							.contentType("application/json; charset=UTF-8")
 							.header("X-Accept", "application/json")
@@ -146,7 +150,7 @@ class PocketAuth(val pocketRedirectUri: String, val pocketCallback: PocketAuthCa
 									}
 								}
 							}
-				} catch(exception: Exception) {
+				} catch (exception: Exception) {
 					pocketCallback.failed()
 				}
 			}
@@ -156,7 +160,7 @@ class PocketAuth(val pocketRedirectUri: String, val pocketCallback: PocketAuthCa
 	private fun authenticated(accessToken: String, userName: String) {
 		this.accessToken = accessToken
 		this.userName = userName
-		if (accessToken.isNullOrBlank() || userName.isNullOrBlank()) pocketCallback.failed()
+		if (accessToken.isBlank() || userName.isBlank()) pocketCallback.failed()
 		else pocketCallback.authenticated(accessToken, userName)
 	}
 
