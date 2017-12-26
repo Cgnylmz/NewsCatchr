@@ -43,7 +43,7 @@ class TagsRecyclerItem(val tags: Array<String>? = null, val fragment: ViewManage
 		return TagsRecyclerItemUI().createView(AnkoContext.create(ctx, this))
 	}
 
-	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>?) {
+	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>) {
 		super.bindView(viewHolder, payloads)
 		viewHolder.tagsBox.removeAllViews()
 		viewHolder.tagsBox.addTags(fragment, tags)
@@ -52,7 +52,7 @@ class TagsRecyclerItem(val tags: Array<String>? = null, val fragment: ViewManage
 	override fun getViewHolder(p0: View) = ViewHolder(p0)
 
 	class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-		var tagsBox: FlexboxLayout = view.find<FlexboxLayout>(R.id.tagsrecycleritem_box)
+		var tagsBox: FlexboxLayout = view.find(R.id.tagsrecycleritem_box)
 	}
 }
 

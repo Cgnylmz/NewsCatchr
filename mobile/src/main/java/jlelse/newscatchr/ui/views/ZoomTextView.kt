@@ -18,6 +18,7 @@
 
 package jlelse.newscatchr.ui.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.TypedValue
 import android.view.MotionEvent
@@ -60,10 +61,7 @@ class ZoomTextView(context: Context) : TextView(context) {
 		}
 	}
 
-	override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-	}
-
+	@SuppressLint("ClickableViewAccessibility")
 	override fun onTouchEvent(ev: MotionEvent): Boolean {
 		super.onTouchEvent(ev)
 		scaleDetector?.onTouchEvent(ev)

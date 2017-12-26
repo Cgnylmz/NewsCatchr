@@ -75,8 +75,8 @@ fun String.toHtml(): Spanned = if (android.os.Build.VERSION.SDK_INT < 24) {
 
 fun <T> tryOrNull(print: Boolean = false, execute: Boolean = true, code: () -> T): T? = try {
 	if (execute) code() else null
-} catch(e: Exception) {
-	if (true) e.printStackTrace()
+} catch (e: Exception) {
+	if (print) e.printStackTrace()
 	null
 }
 

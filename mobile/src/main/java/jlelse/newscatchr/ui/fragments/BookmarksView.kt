@@ -65,7 +65,7 @@ class BookmarksView : ViewManagerView() {
 		return fragmentView
 	}
 
-	fun loadArticles(cache: Boolean = false) = async {
+	private fun loadArticles(cache: Boolean = false) = async {
 		refreshOne?.showIndicator()
 		val articles = await {
 			if (!cache && Preferences.pocketSync && !Preferences.pocketUserName.isBlank() && !Preferences.pocketAccessToken.isBlank()) {

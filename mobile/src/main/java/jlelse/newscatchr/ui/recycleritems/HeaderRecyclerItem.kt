@@ -38,7 +38,7 @@ class HeaderRecyclerItem(val title: String? = null) : NCAbstractItem<HeaderRecyc
 		return HeaderRecyclerItemUI().createView(AnkoContext.create(ctx, this))
 	}
 
-	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>?) {
+	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>) {
 		super.bindView(viewHolder, payloads)
 		viewHolder.title.text = title ?: ""
 	}
@@ -46,6 +46,6 @@ class HeaderRecyclerItem(val title: String? = null) : NCAbstractItem<HeaderRecyc
 	override fun getViewHolder(p0: View) = ViewHolder(p0)
 
 	class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-		var title: TextView = view.find<TextView>(R.id.headerrecycleritem_textview)
+		var title: TextView = view.find(R.id.headerrecycleritem_textview)
 	}
 }

@@ -20,6 +20,7 @@
 
 package jlelse.newscatchr.ui.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.text.format.DateUtils
 import android.view.Menu
@@ -47,6 +48,7 @@ import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 
+@SuppressLint("ViewConstructor")
 class ArticleView(var article: Article) : ViewManagerView(), FAB {
 	private var fragmentView: View? = null
 	private val titleView: TextView? by lazy { fragmentView?.find<TextView>(R.id.articlefragment_title) }

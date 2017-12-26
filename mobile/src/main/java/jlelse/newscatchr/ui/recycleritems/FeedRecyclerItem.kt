@@ -49,7 +49,7 @@ class FeedRecyclerItem(val feed: Feed? = null, val isLast: Boolean = false, val 
 		return FeedRecyclerItemUI().createView(AnkoContext.create(ctx, this))
 	}
 
-	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>?) {
+	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>) {
 		super.bindView(viewHolder, payloads)
 		val context = viewHolder.itemView.context
 		if (feed != null) {
@@ -80,9 +80,9 @@ class FeedRecyclerItem(val feed: Feed? = null, val isLast: Boolean = false, val 
 	override fun getViewHolder(p0: View) = ViewHolder(p0)
 
 	class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-		var title: TextView = view.find<TextView>(R.id.feedrecycleritem_title)
-		var website: TextView = view.find<TextView>(R.id.feedrecycleritem_website)
-		var favorite: ImageView = view.find<ImageView>(R.id.feedrecycleritem_favorite)
-		var divider: View = view.find<View>(R.id.feedrecycleritem_divider)
+		var title: TextView = view.find(R.id.feedrecycleritem_title)
+		var website: TextView = view.find(R.id.feedrecycleritem_website)
+		var favorite: ImageView = view.find(R.id.feedrecycleritem_favorite)
+		var divider: View = view.find(R.id.feedrecycleritem_divider)
 	}
 }

@@ -47,7 +47,7 @@ class ArticleRecyclerItem(val article: Article? = null, val fragment: ViewManage
 		return ArticleRecyclerItemUI().createView(AnkoContext.create(ctx, this))
 	}
 
-	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>?) {
+	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>) {
 		super.bindView(viewHolder, payloads)
 		val context = viewHolder.itemView.context
 		if (!article?.title.isNullOrBlank()) {
@@ -106,12 +106,12 @@ class ArticleRecyclerItem(val article: Article? = null, val fragment: ViewManage
 	override fun getViewHolder(p0: View) = ViewHolder(p0)
 
 	class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-		var bookmark: ImageView = view.find<ImageView>(R.id.articlerecycleritem_bookmark)
-		var share: ImageView = view.find<ImageView>(R.id.articlerecycleritem_share)
-		var title: TextView = view.find<TextView>(R.id.articlerecycleritem_title)
-		var details: TextView = view.find<TextView>(R.id.articlerecycleritem_details)
-		var content: TextView = view.find<TextView>(R.id.articlerecycleritem_content)
-		var visual: ImageView = view.find<ImageView>(R.id.articlerecycleritem_visual)
-		var tagsBox: FlexboxLayout = view.find<FlexboxLayout>(R.id.articlerecycleritem_tagsbox)
+		var bookmark: ImageView = view.find(R.id.articlerecycleritem_bookmark)
+		var share: ImageView = view.find(R.id.articlerecycleritem_share)
+		var title: TextView = view.find(R.id.articlerecycleritem_title)
+		var details: TextView = view.find(R.id.articlerecycleritem_details)
+		var content: TextView = view.find(R.id.articlerecycleritem_content)
+		var visual: ImageView = view.find(R.id.articlerecycleritem_visual)
+		var tagsBox: FlexboxLayout = view.find(R.id.articlerecycleritem_tagsbox)
 	}
 }

@@ -38,7 +38,7 @@ class CustomTextRecyclerItem(val text: String? = null) : NCAbstractItem<CustomTe
 		return CustomTextRecyclerItemUI().createView(AnkoContext.create(ctx, this))
 	}
 
-	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>?) {
+	override fun bindView(viewHolder: ViewHolder, payloads: MutableList<Any?>) {
 		super.bindView(viewHolder, payloads)
 		viewHolder.text.text = text
 	}
@@ -46,6 +46,6 @@ class CustomTextRecyclerItem(val text: String? = null) : NCAbstractItem<CustomTe
 	override fun getViewHolder(p0: View) = ViewHolder(p0)
 
 	class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-		var text: TextView = view.find<TextView>(R.id.customtextrecycleritem_text)
+		var text: TextView = view.find(R.id.customtextrecycleritem_text)
 	}
 }
