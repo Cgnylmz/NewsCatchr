@@ -29,17 +29,14 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import co.metalab.asyncawait.async
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
-import jlelse.newscatchr.backend.apis.Feedly
 import jlelse.newscatchr.backend.apis.openUrl
 import jlelse.newscatchr.backend.helpers.Database
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.interfaces.FAB
 import jlelse.newscatchr.ui.layout.ArticleViewUI
 import jlelse.newscatchr.ui.recycleritems.addTags
-import jlelse.newscatchr.ui.views.SwipeRefreshLayout
 import jlelse.newscatchr.ui.views.ZoomTextView
 import jlelse.readit.R
 import jlelse.viewmanager.ViewManagerView
@@ -54,7 +51,6 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 	private val detailsView: TextView? by lazy { fragmentView?.find<TextView>(R.id.articlefragment_details) }
 	private val tagsBox: FlexboxLayout? by lazy { fragmentView?.find<FlexboxLayout>(R.id.articlefragment_tagsbox) }
 	private val articleContentView: ZoomTextView? by lazy { fragmentView?.find<ZoomTextView>(R.id.articlefragment_content) }
-	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.articlefragment_refresh) }
 
 	private val bookmark
 		get() = Database.isSavedBookmark(article.url)
@@ -65,23 +61,12 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 	override fun onCreateView(): View? {
 		super.onCreateView()
 		fragmentView = ArticleViewUI().createView(AnkoContext.create(context, this))
-		article.id?.let { articleId ->
-			refreshOne?.setOnRefreshListener {
-				try {
-					async { showArticle(await { Feedly().entries(listOf(articleId))?.firstOrNull() }) }
-				} catch (e: Exception) {
-					refreshOne?.hideIndicator()
-				}
-			}
-		}
 		showArticle(article)
 		Database.addReadUrl(article.url)
 		return fragmentView
 	}
 
-	private fun showArticle(article: Article?) = async {
-		refreshOne?.showIndicator()
-		await { article?.process(true) }
+	private fun showArticle(article: Article?) {
 		if (article != null) {
 			this@ArticleView.article = article
 			image(article.visualUrl)
@@ -90,7 +75,6 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 			content(article.content)
 			keywords(article.keywords)
 		}
-		refreshOne?.hideIndicator()
 	}
 
 	private fun image(visualUrl: String? = "") {
