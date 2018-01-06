@@ -71,6 +71,11 @@
 			</intent-filter>
 		</activity>
 
+		<!-- Support 16:9 -->
+		<meta-data
+			android:name="android.max_aspect"
+			android:value="2.1" />
+
 		<!-- Fix -->
 		<service
 			android:name="com.evernote.android.job.gcm.PlatformGcmService"
