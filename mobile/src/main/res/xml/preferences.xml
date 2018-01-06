@@ -17,18 +17,6 @@
   -->
 
 <android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<android.support.v7.preference.PreferenceCategory
-		android:key="@string/prefs_key_pro_category"
-		android:title="@string/donate">
-		<android.support.v7.preference.Preference
-			android:key="@string/prefs_key_support_pref"
-			android:summary="@string/subscribe_support_desc"
-			android:title="@string/subscribe_support" />
-		<android.support.v7.preference.Preference
-			android:key="@string/prefs_key_donate_pref"
-			android:summary="@string/donate_support_desc"
-			android:title="@string/donate_support" />
-	</android.support.v7.preference.PreferenceCategory>
 	<android.support.v7.preference.PreferenceCategory android:title="@string/general">
 		<android.support.v7.preference.Preference
 			android:key="@string/prefs_key_clear_cache"

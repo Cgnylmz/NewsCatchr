@@ -67,14 +67,11 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 	private val backupPref: Preference? by lazy { findPreference(R.string.prefs_key_backup.resStr()) }
 	private val importPref: Preference? by lazy { findPreference(R.string.prefs_key_import_opml.resStr()) }
 	private val syncNowPref: Preference? by lazy { findPreference(R.string.prefs_key_sync_now.resStr()) }
-	private val proPref: Preference? by lazy { findPreference(R.string.prefs_key_support_pref.resStr()) }
-	private val donatePref: Preference? by lazy { findPreference(R.string.prefs_key_donate_pref.resStr()) }
 	private val syncPref: Preference? by lazy { findPreference(R.string.prefs_key_sync.resStr()) }
 	private val syncIntervalPref: Preference? by lazy { findPreference(R.string.prefs_key_sync_interval.resStr()) }
 	private val pocketLoginPref: Preference? by lazy { findPreference(R.string.prefs_key_pocket_login.resStr()) }
 	private val pocketSyncPref: Preference? by lazy { findPreference(R.string.prefs_key_pocket_sync.resStr()) }
 	private val issuePref: Preference? by lazy { findPreference(R.string.prefs_key_issue.resStr()) }
-	private val privacyPref: Preference? by lazy { findPreference(R.string.prefs_key_privacy.resStr()) }
 	private val showTutorialPref: Preference? by lazy { findPreference(R.string.prefs_key_show_tutorial.resStr()) }
 
 	// Pocket stuff
@@ -99,8 +96,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 		// Add ClickListeners
 		clearCachePref?.onPreferenceClickListener = this
 		clearHistoryPref?.onPreferenceClickListener = this
-		proPref?.onPreferenceClickListener = this
-		donatePref?.onPreferenceClickListener = this
 		viewLibsPref?.onPreferenceClickListener = this
 		viewApisPref?.onPreferenceClickListener = this
 		aboutPref?.onPreferenceClickListener = this
@@ -110,7 +105,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 		syncNowPref?.onPreferenceClickListener = this
 		pocketLoginPref?.onPreferenceClickListener = this
 		issuePref?.onPreferenceClickListener = this
-		privacyPref?.onPreferenceClickListener = this
 		showTutorialPref?.onPreferenceClickListener = this
 
 		// Add ChangeListeners
@@ -136,24 +130,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 						Snackbar.make(mainAcivity!!.findViewById(R.id.mainactivity_container), R.string.cleared_history, Snackbar.LENGTH_SHORT).show()
 					}
 				}
-			}
-			proPref -> {
-				MaterialDialog.Builder(settingsContext)
-						.items(mainAcivity?.getProOptions() ?: listOf<String>())
-						.itemsCallback { _, _, position, _ ->
-							mainAcivity?.purchaseProSub(position)
-						}
-						.negativeText(android.R.string.cancel)
-						.let { tryOrNull { it.show() } }
-			}
-			donatePref -> {
-				MaterialDialog.Builder(settingsContext)
-						.items(mainAcivity?.getDonationOptions() ?: listOf<String>())
-						.itemsCallback { _, _, position, _ ->
-							mainAcivity?.purchaseDonation(position)
-						}
-						.negativeText(android.R.string.cancel)
-						.let { tryOrNull { it.show() } }
 			}
 			viewLibsPref -> {
 				val html = listOf(
@@ -281,7 +257,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 				}
 			}
 			issuePref -> "https://github.com/jlelse/NewsCatchr-OpenSource/issues".openUrl(mainAcivity!!, amp = false)
-			privacyPref -> "https://newscatchr.jlelse.eu/privacy.html".openUrl(mainAcivity!!, amp = false)
 			showTutorialPref -> {
 				mainAcivity?.bottomNavigationView?.find<View>(R.id.bb_news)?.performClick()
 				mainAcivity?.showTutorial()

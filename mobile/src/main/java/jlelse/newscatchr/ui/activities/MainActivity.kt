@@ -34,8 +34,6 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import co.metalab.asyncawait.async
 import com.afollestad.materialdialogs.MaterialDialog
-import com.anjlab.android.iab.v3.BillingProcessor
-import com.anjlab.android.iab.v3.TransactionDetails
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.apis.fetchArticle
 import jlelse.newscatchr.backend.apis.share
@@ -54,7 +52,6 @@ import jlelse.viewmanager.ViewManagerView
 import me.toptas.fancyshowcase.FancyShowCaseQueue
 import me.toptas.fancyshowcase.FancyShowCaseView
 import me.zhanghai.android.customtabshelper.CustomTabsHelperFragment
-import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
 
@@ -64,19 +61,6 @@ class MainActivity : ViewManagerActivity() {
 	private val fab: FloatingActionButton? by lazy { find<FloatingActionButton>(R.id.mainactivity_fab) }
 	private val subtitle: TextView? by lazy { find<TextView>(R.id.mainactivity_toolbarsubtitle) }
 	val bottomNavigationView: BottomNavigationView? by lazy { find<BottomNavigationView>(R.id.mainactivity_navigationview) }
-	private var billingProcessor: BillingProcessor? = null
-
-	var IABReady = false
-
-	private val licenceKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmnVnCUmnyl0MQek4LpMopUVNb5czY+7RVsCl0vV7LU2nAJppZqTtHoZpeFyD9ae6BtVx/f6WW/xV37KCr4Eo/4Bh796e8AYzxfOm8icw7TPU9M2FNUjJ46qtZZl5I9ItfhOoapu5tGAY8i0Z5142046UpMs0XLGeGhVsr/3RSGWSzbHRhWOKVFJqa1JgWSHUGTUUHvkVai3sWKl1acreIivio3kpNh/jY9T9xwd6pl5Xzg32i00m87BMuJaA+QofQjFWTFmsUDC0tx+nERxnUud6S/A/n2nKKkhQ3c0mz961swxarWpzrP131VbYYPmGZ0WhXt6tMsTnpg/G++2l1wIDAQAB"
-	private val PRO_SKU_1 = "prosub"
-	private val PRO_SKU_2 = "prosub2"
-	private val PRO_SKU_3 = "prosub3"
-	private val PRO_SKU_4 = "prosub4"
-	private val DONATION_SKU_1 = "prodonation1"
-	private val DONATION_SKU_2 = "prodonation2"
-	private val DONATION_SKU_3 = "prodonation3"
-	private val DONATION_SKU_4 = "prodonation4"
 
 	override val initViewStacks: MutableList<MutableList<ViewManagerView>>
 		get() = mutableListOf(
@@ -91,30 +75,7 @@ class MainActivity : ViewManagerActivity() {
 		mainAcivity = this
 		MainActivityUI().setContentView(this)
 		super.onCreate(savedInstanceState)
-		doAsync {
-			// Init Custom Tabs
-			customTabsHelperFragment = CustomTabsHelperFragment.attachTo(this@MainActivity)
-			// Check purchases
-			if (BillingProcessor.isIabServiceAvailable(this@MainActivity)) {
-				billingProcessor = BillingProcessor(this@MainActivity, licenceKey, object : BillingProcessor.IBillingHandler {
-					override fun onBillingInitialized() {
-						IABReady = true
-						billingProcessor?.loadOwnedPurchasesFromGoogle()
-					}
-
-					override fun onProductPurchased(productId: String, details: TransactionDetails?) {
-						MaterialDialog.Builder(this@MainActivity)
-								.title(R.string.thanks_purchase)
-								.content(R.string.thanks_purchase_desc)
-								.positiveText(android.R.string.ok)
-								.show()
-					}
-
-					override fun onBillingError(errorCode: Int, error: Throwable?) {}
-					override fun onPurchaseHistoryRestored() {}
-				})
-			}
-		}
+		customTabsHelperFragment = CustomTabsHelperFragment.attachTo(this@MainActivity)
 		setSupportActionBar(toolbar)
 		bottomNavigationView?.apply {
 			selectedItemId = when (lastTab) {
@@ -221,30 +182,6 @@ class MainActivity : ViewManagerActivity() {
 		subtitle?.text = fragment?.title
 	}
 
-	fun getProOptions() = billingProcessor?.getSubscriptionListingDetails(arrayListOf(PRO_SKU_1, PRO_SKU_2, PRO_SKU_3, PRO_SKU_4))?.map { "${it.title}: ${it.priceText} ${it.subscriptionPeriod}" }
-
-	fun purchaseProSub(number: Int) {
-		billingProcessor?.subscribe(this, when (number) {
-			1 -> PRO_SKU_2
-			2 -> PRO_SKU_3
-			3 -> PRO_SKU_4
-			else -> PRO_SKU_1
-		})
-	}
-
-	fun getDonationOptions() = billingProcessor?.getPurchaseListingDetails(arrayListOf(DONATION_SKU_1, DONATION_SKU_2, DONATION_SKU_3, DONATION_SKU_4))?.map { "${it.title}: ${it.priceText}" }
-
-	fun purchaseDonation(number: Int) {
-		val product = when (number) {
-			1 -> DONATION_SKU_2
-			2 -> DONATION_SKU_3
-			3 -> DONATION_SKU_4
-			else -> DONATION_SKU_1
-		}
-		if (billingProcessor?.isPurchased(product) == true) billingProcessor?.consumePurchase(product)
-		billingProcessor?.purchase(this, product)
-	}
-
 	fun showTutorial() {
 		FancyShowCaseQueue()
 				.add(FancyShowCaseView.Builder(this)
@@ -276,15 +213,6 @@ class MainActivity : ViewManagerActivity() {
 	override fun onNewIntent(intent: Intent?) {
 		super.onNewIntent(intent)
 		handleIntent(intent)
-	}
-
-	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-		if (billingProcessor?.handleActivityResult(requestCode, resultCode, data) != true) super.onActivityResult(requestCode, resultCode, data)
-	}
-
-	override fun onDestroy() {
-		billingProcessor?.release()
-		super.onDestroy()
 	}
 
 	override fun createMenu(menu: Menu?) {

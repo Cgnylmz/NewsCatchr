@@ -76,11 +76,6 @@
 	<string name="advanced">Advanced</string>
 	<string name="nothing_found">Nothing found!</string>
 	<string name="article_image">Article Image</string>
-	<string name="donate">Donate</string>
-	<string name="subscribe_support">Subscribe to support the development</string>
-	<string name="subscribe_support_desc">Subscribe and make NewsCatchr getting more updates</string>
-	<string name="donate_support">Donate to support the development</string>
-	<string name="donate_support_desc">Donate (once or more often) and make NewsCatchr getting more updates</string>
 	<string name="prefs_amp">Accelerated Mobile Pages</string>
 	<string name="prefs_amp_desc">Load an accelerated version of the website</string>
 	<string name="share_app">Share NewsCatchr</string>
