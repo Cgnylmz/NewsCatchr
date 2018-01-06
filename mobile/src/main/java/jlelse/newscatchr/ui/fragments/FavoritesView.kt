@@ -69,8 +69,10 @@ class FavoritesView : ViewManagerView(), ItemTouchCallback {
 
 	private fun load() {
 		feeds = Database.allFavorites.toMutableList()
-		if (feeds?.notNullAndEmpty() == true) feedAdapter.setNewList(feeds!!.map { FeedRecyclerItem(it, fragment = this@FavoritesView) })
-		else {
+		if (feeds?.notNullAndEmpty() == true) {
+			feedAdapter.setNewList(feeds!!.map { FeedRecyclerItem(it, fragment = this@FavoritesView) })
+			errorAdapter.setNewList(listOf())
+		} else {
 			feedAdapter.setNewList(listOf())
 			errorAdapter.setNewList(listOf(CustomTextRecyclerItem(R.string.nothing_marked_favorite.resStr())))
 		}
