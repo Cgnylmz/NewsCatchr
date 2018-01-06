@@ -42,7 +42,6 @@ fun getCachedArticle(id: String): Article? = tryOrNull {
 }
 
 fun Article.saveToCache() {
-	process()
 	if (!id.isNullOrBlank()) KeyObjectStore(appContext!!, name = "article_cache", cache = true).write<Article>(id!!.formatForCache(), this)
 }
 

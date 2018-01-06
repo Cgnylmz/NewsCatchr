@@ -56,30 +56,13 @@ class Article(
 		var excerpt: String? = null,
 		var cdnAmpUrl: String? = null,
 		var ampUrl: String? = null,
-		var url: String? = null,
-		var cleanedContent: Boolean = false,
-		var checkedUrl: Boolean = false,
-		var checkedImageUrl: Boolean = false
+		var url: String? = null
 ) {
-	fun process(force: Boolean = false): Article {
-		if (force) {
-			cleanedContent = false
-			checkedUrl = false
-			checkedImageUrl = false
-		}
-		if (!cleanedContent) {
-			content = (summaryContent.blankNull() ?: content)?.cleanHtml()
-			excerpt = content?.toHtml().toString().buildExcerpt(30)
-			cleanedContent = true
-		}
-		if (!checkedUrl) {
-			url = canonicalHref.blankNull() ?: alternateHref.blankNull() ?: url
-			checkedUrl = true
-		}
-		if (!checkedImageUrl) {
-			visualUrl = enclosureHref.blankNull() ?: visualUrl
-			checkedImageUrl = true
-		}
+	fun process(): Article {
+		content = (summaryContent.blankNull() ?: content)?.cleanHtml()
+		excerpt = content?.toHtml().toString().buildExcerpt(30)
+		url = canonicalHref.blankNull() ?: alternateHref.blankNull() ?: url
+		visualUrl = enclosureHref.blankNull() ?: visualUrl
 		return this
 	}
 
