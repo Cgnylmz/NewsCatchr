@@ -65,8 +65,10 @@ class BookmarksView : ViewManagerView() {
 	private fun loadArticles() = async {
 		refreshOne?.showIndicator()
 		val articles = await { Database.allBookmarks }
-		if (articles.notNullAndEmpty()) bookmarkAdapter.setNewList(articles.map { ArticleRecyclerItem(it, this@BookmarksView) })
-		else {
+		if (articles.notNullAndEmpty()) {
+			bookmarkAdapter.setNewList(articles.map { ArticleRecyclerItem(it, this@BookmarksView) })
+			errorAdapter.setNewList(listOf())
+		} else {
 			bookmarkAdapter.setNewList(listOf())
 			errorAdapter.setNewList(listOf(CustomTextRecyclerItem(R.string.nothing_bookmarked.resStr())))
 		}
