@@ -23,7 +23,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.customtabs.CustomTabsIntent
-import com.afollestad.ason.Ason
 import com.afollestad.bridge.Bridge
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.helpers.Preferences
@@ -47,13 +46,9 @@ fun Context.share(title: String, text: String) {
 // Short Url
 fun String.shortUrl(): String {
 	if (isNotBlank()) {
-		Bridge.post("https://www.googleapis.com/urlshortener/v1/url?fields=id&key=$GoogleApiKey")
-				.body(Ason().put("longUrl", this))
-				.contentType("application/json")
-				.asAsonObject()
-				.let {
-					return it?.getString("id").blankNull() ?: this
-				}
+		Bridge.get("https://tny.im/yourls-api.php?action=shorturl&format=simple&url=$this")
+				.asString()
+				.let { return it ?: this }
 	} else return this
 }
 

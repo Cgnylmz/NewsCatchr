@@ -20,6 +20,5 @@ package jlelse.newscatchr.backend.apis
 
 // You have to optain the keys yourself - GOOD LUCK WITH THAT!
 
-val GoogleApiKey = ""
 val ReadabilityApiKey = ""
 val PocketApiKey = ""

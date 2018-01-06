@@ -160,7 +160,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 				val html = listOf(
 						Library("feedly Cloud API", "", "https://developer.feedly.com"),
 						Library("Pocket API", "", "https://getpocket.com/developer/"),
-						Library("Google URL Shortener", "", "https://developers.google.com/url-shortener/"),
+						Library("tny.im Url Shortener", "", "https://tny.im/aboutapi.php"),
 						Library("Mercury by Postlight", "", "https://mercury.postlight.com/", true)
 				).joinToString(separator = "") { "<b><a href=\"${it.link}\">${it.name}</a></b>${if (!it.isLast) "<br><br>" else ""}" }
 				MaterialDialog.Builder(settingsContext)
