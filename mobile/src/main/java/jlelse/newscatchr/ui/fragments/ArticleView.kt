@@ -156,7 +156,6 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 				else Database.deleteBookmark(article.url)
 				item.icon = (if (bookmark) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, Color.WHITE)
 			}
-			R.id.share -> shareArticle()
 			R.id.browser -> (article.cdnAmpUrl ?: article.ampUrl).openUrl(context, isAmp = true, notAmpLink = article.url)
 		}
 	}

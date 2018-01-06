@@ -24,11 +24,6 @@
 		android:title="@string/mark_as_bookmark"
 		app:showAsAction="ifRoom" />
 	<item
-		android:id="@+id/share"
-		android:icon="@drawable/ic_share_universal"
-		android:title="@string/share"
-		app:showAsAction="ifRoom" />
-	<item
 		android:id="@+id/browser"
 		android:icon="@drawable/ic_language_universal"
 		android:title="@string/open_in_browser"
