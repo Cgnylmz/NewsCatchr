@@ -49,16 +49,6 @@
 			android:key="@string/prefs_key_sync_now"
 			android:title="@string/sync_now" />
 	</android.support.v7.preference.PreferenceCategory>
-	<android.support.v7.preference.PreferenceCategory android:title="@string/pocket">
-		<android.support.v7.preference.Preference
-			android:key="@string/prefs_key_pocket_login"
-			android:title="@string/pocket_login" />
-		<android.support.v7.preference.SwitchPreferenceCompat
-			android:defaultValue="true"
-			android:key="@string/prefs_key_pocket_sync"
-			android:summary="@string/pocket_sync_desc"
-			android:title="@string/pocket_sync_title" />
-	</android.support.v7.preference.PreferenceCategory>
 	<android.support.v7.preference.PreferenceCategory android:title="@string/advanced">
 		<android.support.v7.preference.SwitchPreferenceCompat
 			android:defaultValue="true"
@@ -75,11 +65,6 @@
 			android:key="@string/prefs_key_url_shortener"
 			android:summary="@string/prefs_url_shortener_desc"
 			android:title="@string/prefs_url_shortener" />
-		<android.support.v7.preference.SwitchPreferenceCompat
-			android:defaultValue="false"
-			android:key="@string/prefs_key_readability"
-			android:summary="@string/prefs_readability_desc"
-			android:title="@string/prefs_readability" />
 		<android.support.v7.preference.SwitchPreferenceCompat
 			android:defaultValue="true"
 			android:key="@string/prefs_key_show_recent_feeds"
@@ -110,8 +95,5 @@
 		<android.support.v7.preference.Preference
 			android:key="@string/prefs_key_issue"
 			android:title="@string/submit_issue" />
-		<android.support.v7.preference.Preference
-			android:key="@string/prefs_key_privacy"
-			android:title="@string/privacy_policy" />
 	</android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

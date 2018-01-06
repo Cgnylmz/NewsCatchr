@@ -33,10 +33,8 @@ import co.metalab.asyncawait.async
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.apis.Feedly
-import jlelse.newscatchr.backend.apis.fetchArticle
 import jlelse.newscatchr.backend.apis.openUrl
 import jlelse.newscatchr.backend.helpers.Database
-import jlelse.newscatchr.backend.helpers.Preferences
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.interfaces.FAB
 import jlelse.newscatchr.ui.layout.ArticleViewUI
@@ -77,7 +75,6 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 			}
 		}
 		showArticle(article)
-		if (Preferences.readability) readability()
 		Database.addReadUrl(article.url)
 		return fragmentView
 	}
@@ -145,11 +142,6 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 
 	private fun shareArticle() = article.share(context)
 
-	private fun readability() = async {
-		refreshOne?.showIndicator()
-		this@ArticleView.showArticle(await { tryOrNull { article.url?.fetchArticle(article) } ?: article })
-	}
-
 	override fun inflateMenu(inflater: MenuInflater, menu: Menu?) {
 		super.inflateMenu(inflater, menu)
 		inflater.inflate(R.menu.articlefragment, menu)
@@ -166,7 +158,6 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 			}
 			R.id.share -> shareArticle()
 			R.id.browser -> (article.cdnAmpUrl ?: article.ampUrl).openUrl(context, isAmp = true, notAmpLink = article.url)
-			R.id.readability -> readability()
 		}
 	}
 }

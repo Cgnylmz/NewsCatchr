@@ -24,11 +24,6 @@
 		android:title="@string/mark_as_bookmark"
 		app:showAsAction="ifRoom" />
 	<item
-		android:id="@+id/readability"
-		android:icon="@drawable/ic_weekend_universal"
-		android:title="@string/readability"
-		app:showAsAction="ifRoom" />
-	<item
 		android:id="@+id/share"
 		android:icon="@drawable/ic_share_universal"
 		android:title="@string/share"

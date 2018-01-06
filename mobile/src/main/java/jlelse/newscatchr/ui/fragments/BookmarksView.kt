@@ -30,11 +30,8 @@ import co.metalab.asyncawait.async
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import jlelse.newscatchr.backend.helpers.Database
-import jlelse.newscatchr.backend.helpers.Preferences
-import jlelse.newscatchr.backend.loaders.PocketLoader
 import jlelse.newscatchr.extensions.notNullAndEmpty
 import jlelse.newscatchr.extensions.resStr
-import jlelse.newscatchr.extensions.tryOrNull
 import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
 import jlelse.newscatchr.ui.recycleritems.ArticleRecyclerItem
 import jlelse.newscatchr.ui.recycleritems.CustomTextRecyclerItem
@@ -61,18 +58,13 @@ class BookmarksView : ViewManagerView() {
 			val adapter: FastAdapter<NCAbstractItem<*, *>> = FastAdapter.with(listOf(bookmarkAdapter, errorAdapter))
 			recyclerOne?.adapter = adapter
 		}
-		loadArticles(true)
+		loadArticles()
 		return fragmentView
 	}
 
-	private fun loadArticles(cache: Boolean = false) = async {
+	private fun loadArticles() = async {
 		refreshOne?.showIndicator()
-		val articles = await {
-			if (!cache && Preferences.pocketSync && !Preferences.pocketUserName.isBlank() && !Preferences.pocketAccessToken.isBlank()) {
-				tryOrNull { Database.allBookmarks = PocketLoader().items()?.toTypedArray() ?: arrayOf() }
-			}
-			Database.allBookmarks
-		}
+		val articles = await { Database.allBookmarks }
 		if (articles.notNullAndEmpty()) bookmarkAdapter.setNewList(articles.map { ArticleRecyclerItem(it, this@BookmarksView) })
 		else {
 			bookmarkAdapter.setNewList(listOf())

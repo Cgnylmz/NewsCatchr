@@ -26,9 +26,6 @@
 	<string name="favorites">Favorites</string>
 	<string name="about">About</string>
 	<string name="news">News</string>
-	<string name="readability">Readability</string>
-	<string name="prefs_readability">Readability</string>
-	<string name="prefs_readability_desc">Always load the article content from the website instead of the feed</string>
 	<string name="search_results_for">Search results for</string>
 	<string name="suc_import">Import completed successfully!</string>
 	<string name="import_failed">Import failed!</string>
@@ -40,11 +37,6 @@
 	<string name="share_failed">Sharing failed!</string>
 	<string name="logged_in_as">Logged in as</string>
 	<string name="del_acc_info">Logout</string>
-	<string name="pocket" translatable="false">Pocket</string>
-	<string name="pocket_sync_title">Pocket synchronization</string>
-	<string name="pocket_sync_desc">Synchronize bookmarks with Pocket - and read them from every device.</string>
-	<string name="pocket_login">Login to Pocket</string>
-	<string name="pocket_logout">Logout from Pocket</string>
 	<string name="open_in_browser">Open in browser</string>
 	<string name="share">Share</string>
 	<string name="what_searching">What are you searching for?</string>

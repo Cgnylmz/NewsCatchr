@@ -10,13 +10,12 @@ Things you have to know:
 
 - The app is mostly written in Kotlin (even before the hype started...). Check out [kotlinlang.org](http://kotlinlang.org/).
 - When you want to build the app, you should use Android Studio or IntelliJ IDEA with the Kotlin plugin installed.
-- The API keys, used by the Play Store version are removed from this code, enter your own under `mobile/src/main/java/jlelse/newscatchr/backend/apis/ApiKeys.kt`.
 
 Some things you can help with:
 
 - Translate the app into your language [here](https://translate.jlelse.eu/)
-- Fix bugs, described on the [issue reporter](https://github.com/jlelse/NewsCatchr-OpenSource/issues)
-- Report bugs on the [issue reporter](https://github.com/jlelse/NewsCatchr-OpenSource/issues)
+- Fix bugs, described on the [issue reporter](https://github.com/NewsCatchr/NewsCatchr/issues)
+- Report bugs on the [issue reporter](https://github.com/NewsCatchr/NewsCatchr/issues)
 - And everything else, that comes into your mind
 
 ## What has changed since the last Play Store release?
@@ -27,7 +26,7 @@ See the [release page](https://github.com/jlelse/NewsCatchr-OpenSource/releases)
 
 ```
 NewsCatchr
-Copyright © 2017 Jan-Lukas Else
+Copyright © 2018 Jan-Lukas Else
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

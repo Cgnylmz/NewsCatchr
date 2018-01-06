@@ -24,10 +24,6 @@
 	<string name="prefs_key_access_token" translatable="false">accesstoken</string>
 	<string name="prefs_key_custom_tabs" translatable="false">custom_tabs</string>
 	<string name="prefs_key_last_version" translatable="false">last_version</string>
-	<string name="prefs_key_pro_category" translatable="false">pro_category</string>
-	<string name="prefs_key_support_pref" translatable="false">support_pref</string>
-	<string name="prefs_key_donate_pref" translatable="false">donate_pref</string>
-	<string name="prefs_key_about_pro" translatable="false">about_pro</string>
 	<string name="prefs_key_view_libs" translatable="false">view_libs</string>
 	<string name="prefs_key_view_apis" translatable="false">view_apis</string>
 	<string name="prefs_key_about_nc" translatable="false">about_nc</string>
@@ -37,11 +33,7 @@
 	<string name="prefs_key_sync_interval" translatable="false">sync_interval</string>
 	<string name="prefs_key_backup" translatable="false">backup</string>
 	<string name="prefs_key_url_shortener" translatable="false">url_shortener</string>
-	<string name="prefs_key_pocket_sync" translatable="false">pocket_sync</string>
-	<string name="prefs_key_pocket_login" translatable="false">pocket_login</string>
 	<string name="prefs_key_issue" translatable="false">issue</string>
-	<string name="prefs_key_privacy" translatable="false">privacy</string>
-	<string name="prefs_key_readability" translatable="false">readability</string>
 	<string name="prefs_key_import_opml" translatable="false">import_opml</string>
 	<string name="prefs_key_show_tutorial" translatable="false">show_tutorial</string>
 	<string name="prefs_key_show_recent_feeds" translatable="false">show_recent_feeds</string>

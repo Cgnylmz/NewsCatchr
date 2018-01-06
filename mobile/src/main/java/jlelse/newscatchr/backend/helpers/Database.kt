@@ -20,12 +20,10 @@
 
 package jlelse.newscatchr.backend.helpers
 
-import co.metalab.asyncawait.async
 import jlelse.kos.KeyObjectStore
 import jlelse.newscatchr.appContext
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
-import jlelse.newscatchr.backend.apis.Pocket
 import jlelse.newscatchr.extensions.tryOrNull
 
 /**
@@ -86,26 +84,12 @@ object Database {
 
 	fun addBookmark(article: Article?) {
 		tryOrNull(execute = article.safeBookmark()) {
-			if (Preferences.pocketSync && !Preferences.pocketUserName.isBlank() && !Preferences.pocketAccessToken.isBlank()) {
-				async {
-					article?.let { article ->
-						await { article.pocketId = PocketHandler().addToPocket(article) }
-						article.fromPocket = true
-						addBookmarks(article)
-					}
-				}
-			} else {
-				addBookmarks(article)
-			}
+			addBookmarks(article)
 		}
 	}
 
 	fun deleteBookmark(url: String?) {
 		tryOrNull(execute = !url.isNullOrBlank()) {
-			if (Preferences.pocketSync && !Preferences.pocketUserName.isBlank() && !Preferences.pocketAccessToken.isBlank())
-				allBookmarks.filter { it.url == url }.forEach {
-					if (it.fromPocket) async { await { PocketHandler().archiveOnPocket(it) } }
-				}
 			allBookmarks = allBookmarks.filter { it.url != url }.toTypedArray()
 		}
 	}
@@ -138,13 +122,5 @@ object Database {
 	fun isSavedBookmark(url: String?) = allBookmarkUrls.contains(url)
 
 	fun isSavedReadUrl(url: String?) = allReadUrls.contains(url)
-
-	class PocketHandler {
-
-		fun addToPocket(item: Article) = tryOrNull { Pocket().add(item.url!!) }
-
-		fun archiveOnPocket(item: Article) = tryOrNull { Pocket().archive(item.pocketId!!) }
-
-	}
 
 }

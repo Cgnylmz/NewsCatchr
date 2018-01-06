@@ -24,7 +24,6 @@ import android.content.Intent
 import android.net.Uri
 import android.support.customtabs.CustomTabsIntent
 import com.afollestad.bridge.Bridge
-import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.helpers.Preferences
 import jlelse.newscatchr.extensions.blankNull
 import jlelse.newscatchr.extensions.resClr
@@ -73,28 +72,6 @@ fun String.downloadHaste(): String? {
 					return it?.getString("data").blankNull()
 				}
 	} else return null
-}
-
-// Readability
-fun String.fetchArticle(oldArticle: Article? = null): Article? {
-	Bridge.get("https://mercury.postlight.com/parser?url=$this")
-			.contentType("application/json")
-			.header("x-api-key", ReadabilityApiKey)
-			.asAsonObject()
-			?.let {
-				return (oldArticle ?: Article()).apply {
-					url = it.getString("url").blankNull() ?: oldArticle?.url ?: this@fetchArticle
-					canonicalHref = null
-					alternateHref = null
-					title = it.getString("title").blankNull() ?: oldArticle?.title
-					content = it.getString("content").blankNull() ?: oldArticle?.title
-					summaryContent = null
-					visualUrl = it.getString("lead_image_url").blankNull() ?: oldArticle?.visualUrl
-					enclosureHref = null
-					process(force = true)
-				}
-			}
-	return null
 }
 
 // AMP

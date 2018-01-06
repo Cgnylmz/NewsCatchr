@@ -24,7 +24,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.preference.Preference
@@ -37,7 +36,6 @@ import co.metalab.asyncawait.async
 import com.afollestad.materialdialogs.MaterialDialog
 import jlelse.newscatchr.appContext
 import jlelse.newscatchr.backend.Feed
-import jlelse.newscatchr.backend.apis.PocketAuth
 import jlelse.newscatchr.backend.apis.backupRestore
 import jlelse.newscatchr.backend.apis.openUrl
 import jlelse.newscatchr.backend.helpers.*
@@ -46,7 +44,6 @@ import jlelse.newscatchr.mainAcivity
 import jlelse.readit.R
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
-import org.jetbrains.anko.support.v4.onUiThread
 import org.jetbrains.anko.uiThread
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
@@ -69,14 +66,8 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 	private val syncNowPref: Preference? by lazy { findPreference(R.string.prefs_key_sync_now.resStr()) }
 	private val syncPref: Preference? by lazy { findPreference(R.string.prefs_key_sync.resStr()) }
 	private val syncIntervalPref: Preference? by lazy { findPreference(R.string.prefs_key_sync_interval.resStr()) }
-	private val pocketLoginPref: Preference? by lazy { findPreference(R.string.prefs_key_pocket_login.resStr()) }
-	private val pocketSyncPref: Preference? by lazy { findPreference(R.string.prefs_key_pocket_sync.resStr()) }
 	private val issuePref: Preference? by lazy { findPreference(R.string.prefs_key_issue.resStr()) }
 	private val showTutorialPref: Preference? by lazy { findPreference(R.string.prefs_key_show_tutorial.resStr()) }
-
-	// Pocket stuff
-	val progressDialog by lazy { settingsContext.progressDialog() }
-	var pocketAuth: PocketAuth? = null
 
 	override fun onCreatePreferences(p0: Bundle?, p1: String?) {
 		addPreferencesFromResource(R.xml.preferences)
@@ -103,7 +94,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 		importPref?.onPreferenceClickListener = this
 		syncIntervalPref?.onPreferenceClickListener = this
 		syncNowPref?.onPreferenceClickListener = this
-		pocketLoginPref?.onPreferenceClickListener = this
 		issuePref?.onPreferenceClickListener = this
 		showTutorialPref?.onPreferenceClickListener = this
 
@@ -112,7 +102,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 
 		refreshLastSyncTime()
 		refreshSyncIntervalDesc()
-		refreshPocket()
 	}
 
 	override fun onPreferenceClick(preference: Preference?): Boolean {
@@ -159,7 +148,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 			viewApisPref -> {
 				val html = listOf(
 						Library("feedly Cloud API", "", "https://developer.feedly.com"),
-						Library("Pocket API", "", "https://getpocket.com/developer/"),
 						Library("tny.im Url Shortener", "", "https://tny.im/aboutapi.php"),
 						Library("Mercury by Postlight", "", "https://mercury.postlight.com/", true)
 				).joinToString(separator = "") { "<b><a href=\"${it.link}\">${it.name}</a></b>${if (!it.isLast) "<br><br>" else ""}" }
@@ -211,51 +199,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 			syncNowPref -> {
 				doAsync { sync(settingsContext) }
 			}
-			pocketLoginPref -> {
-				val loggedIn = !Preferences.pocketUserName.isBlank() && !Preferences.pocketAccessToken.isBlank()
-				if (loggedIn) {
-					Preferences.pocketAccessToken = ""
-					Preferences.pocketUserName = ""
-					refreshPocket()
-				} else {
-					progressDialog.show()
-					pocketAuth = PocketAuth("pocketapp45699:authorizationFinished", object : PocketAuth.PocketAuthCallback {
-
-						override fun authorize(url: String) {
-							progressDialog.dismiss()
-							startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-						}
-
-						override fun authenticated(accessToken: String, userName: String) {
-							onUiThread {
-								doAsync {
-									val database = Database
-									database.allBookmarks.apply {
-										forEach {
-											database.deleteBookmark(it.url ?: "")
-										}
-										Preferences.pocketAccessToken = accessToken
-										Preferences.pocketUserName = userName
-										forEach {
-											database.addBookmark(it)
-										}
-									}
-									uiThread {
-										refreshPocket()
-										progressDialog.dismiss()
-									}
-								}
-							}
-						}
-
-						override fun failed() {
-							progressDialog.dismiss()
-						}
-
-					}).apply { startAuth() }
-				}
-			}
-			issuePref -> "https://github.com/jlelse/NewsCatchr-OpenSource/issues".openUrl(mainAcivity!!, amp = false)
+			issuePref -> "https://github.com/NewsCatchr/NewsCatchr/issues".openUrl(mainAcivity!!, amp = false)
 			showTutorialPref -> {
 				mainAcivity?.bottomNavigationView?.find<View>(R.id.bb_news)?.performClick()
 				mainAcivity?.showTutorial()
@@ -280,15 +224,6 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 
 	private fun refreshSyncIntervalDesc() {
 		syncIntervalPref?.summary = R.array.sync_interval_titles.resStrArr()!![R.array.sync_interval_values.resIntArr()!!.indexOf(Preferences.syncInterval)]
-	}
-
-	private fun refreshPocket() {
-		val loggedIn = !Preferences.pocketUserName.isBlank() && !Preferences.pocketAccessToken.isBlank()
-		pocketSyncPref?.isVisible = loggedIn
-		pocketLoginPref?.let {
-			it.title = (if (loggedIn) R.string.pocket_logout else R.string.pocket_login).resStr()
-			it.summary = if (loggedIn) "${R.string.logged_in_as.resStr()} ${Preferences.pocketUserName}" else null
-		}
 	}
 
 	private fun importOpml(opml: String?) = async {

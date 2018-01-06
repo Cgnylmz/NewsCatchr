@@ -32,17 +32,19 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.FrameLayout
 import android.widget.TextView
-import co.metalab.asyncawait.async
 import com.afollestad.materialdialogs.MaterialDialog
 import jlelse.newscatchr.backend.Feed
-import jlelse.newscatchr.backend.apis.fetchArticle
+import jlelse.newscatchr.backend.apis.openUrl
 import jlelse.newscatchr.backend.apis.share
 import jlelse.newscatchr.backend.helpers.Preferences
 import jlelse.newscatchr.customTabsHelperFragment
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.lastTab
 import jlelse.newscatchr.mainAcivity
-import jlelse.newscatchr.ui.fragments.*
+import jlelse.newscatchr.ui.fragments.BookmarksView
+import jlelse.newscatchr.ui.fragments.FeedView
+import jlelse.newscatchr.ui.fragments.HomeView
+import jlelse.newscatchr.ui.fragments.SettingsView
 import jlelse.newscatchr.ui.interfaces.FAB
 import jlelse.newscatchr.ui.interfaces.FragmentManipulation
 import jlelse.newscatchr.ui.layout.MainActivityUI
@@ -125,14 +127,7 @@ class MainActivity : ViewManagerActivity() {
 							.itemsCallback { _, _, i, _ ->
 								when (i) {
 									0 -> searchForFeeds(this, it)
-									1 -> async {
-										val progressDialog = this@MainActivity.progressDialog().apply { show() }
-										val article = await { tryOrNull { it.fetchArticle() } }
-										if (article != null) {
-											this@MainActivity.openView(ArticleView(article = article).withTitle(article.title))
-										}
-										progressDialog.dismiss()
-									}
+									1 -> it.openUrl(this@MainActivity, notAmpLink = it)
 								}
 							}
 							.show()
@@ -144,9 +139,6 @@ class MainActivity : ViewManagerActivity() {
 					searchForFeeds(this, it)
 				}
 			}
-			// Pocket
-			val currentFrag = currentView()
-			if (currentFrag is SettingsView && intent.scheme == "pocketapp45699") currentFrag.finishPocketAuth()
 		}
 	}
 

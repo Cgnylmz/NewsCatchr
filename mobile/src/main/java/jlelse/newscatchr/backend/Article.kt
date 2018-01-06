@@ -57,8 +57,6 @@ class Article(
 		var cdnAmpUrl: String? = null,
 		var ampUrl: String? = null,
 		var url: String? = null,
-		var pocketId: String? = null,
-		var fromPocket: Boolean = false,
 		var cleanedContent: Boolean = false,
 		var checkedUrl: Boolean = false,
 		var checkedImageUrl: Boolean = false
