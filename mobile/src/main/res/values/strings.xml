@@ -121,7 +121,7 @@
 	<string name="tutorial_0">Welcome to NewsCatchr! This tutorial will introduce you to the basic things. Click anywhere to continue…</string>
 	<string name="tutorial_1">Here you can find the latest news. Select a feed to read it\'s articles. Save your favorite feeds for faster access.</string>
 	<string name="tutorial_2">If you save an article, it will be available here.</string>
-	<string name="tutorial_3">Change the apps settings to your needs.</string>
+	<string name="tutorial_3">Change the app\'s settings to your needs.</string>
 	<string name="tutorial_4">Here you can search for feeds. If you want, you can also enter the RSS url here.</string>
 	<string name="tutorial_5">Have fun!</string>
 	<string name="thanks_purchase">Thanks!</string>
