@@ -20,7 +20,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.jlelse.NewsCatchr-OpenSource'
+group='com.github.NewsCatchr.NewsCatchr'
 
 android {
     compileSdkVersion TARGET_SDK
