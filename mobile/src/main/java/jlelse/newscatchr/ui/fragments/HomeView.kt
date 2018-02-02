@@ -32,7 +32,7 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.apis.Feedly
-import jlelse.newscatchr.backend.helpers.Database
+import jlelse.newscatchr.backend.helpers.ObjectStoreDatabase
 import jlelse.newscatchr.backend.helpers.Preferences
 import jlelse.newscatchr.extensions.notNullAndEmpty
 import jlelse.newscatchr.extensions.resStr
@@ -105,11 +105,11 @@ class HomeView : ViewManagerView(), FAB, FragmentManipulation {
 		lastAdapter.setNewList(listOf())
 		lastFooterAdapter.setNewList(listOf())
 		if (Preferences.showRecentFeeds) {
-			val lastFeeds = await { Database.allLastFeeds.takeLast(5).reversed() }
+			val lastFeeds = await { ObjectStoreDatabase.allLastFeeds.takeLast(5).reversed() }
 			if (lastFeeds.notNullAndEmpty()) {
 				lastHeaderAdapter.add(HeaderRecyclerItem(title = R.string.last_feeds.resStr()!!))
 				lastAdapter.add(lastFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == lastFeeds.lastIndex) })
-				lastFooterAdapter.add(MoreRecyclerItem { openView(FeedListView(feeds = Database.allLastFeeds.reversed().toTypedArray()).withTitle(R.string.last_feeds.resStr())) })
+				lastFooterAdapter.add(MoreRecyclerItem { openView(FeedListView(feeds = ObjectStoreDatabase.allLastFeeds.reversed().toTypedArray()).withTitle(R.string.last_feeds.resStr())) })
 			}
 		}
 	}
@@ -118,7 +118,7 @@ class HomeView : ViewManagerView(), FAB, FragmentManipulation {
 		favoriteHeaderAdapter.setNewList(listOf())
 		favoriteAdapter.setNewList(listOf())
 		favoriteFooterAdapter.setNewList(listOf())
-		val favoriteFeeds = await { Database.allFavorites.take(5) }
+		val favoriteFeeds = await { ObjectStoreDatabase.allFavorites.take(5) }
 		if (favoriteFeeds.notNullAndEmpty()) {
 			favoriteHeaderAdapter.add(HeaderRecyclerItem(title = R.string.favorites.resStr()!!))
 			favoriteAdapter.add(favoriteFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == favoriteFeeds.lastIndex) })

@@ -27,9 +27,9 @@ import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.extensions.tryOrNull
 
 /**
- * Database
+ * ObjectStoreDatabase
  */
-object Database : IDatabase {
+object ObjectStoreDatabase : IDatabase {
 
 	private const val FAVORITES = "feeds_database"
 	private val favoritesStore = KeyObjectStore(appContext!!, FAVORITES)

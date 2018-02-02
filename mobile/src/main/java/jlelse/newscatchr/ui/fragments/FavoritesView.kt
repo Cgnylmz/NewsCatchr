@@ -31,7 +31,7 @@ import com.mikepenz.fastadapter_extensions.drag.ItemTouchCallback
 import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback
 import com.mikepenz.fastadapter_extensions.utilities.DragDropUtil
 import jlelse.newscatchr.backend.Feed
-import jlelse.newscatchr.backend.helpers.Database
+import jlelse.newscatchr.backend.helpers.ObjectStoreDatabase
 import jlelse.newscatchr.extensions.notNullAndEmpty
 import jlelse.newscatchr.extensions.resStr
 import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
@@ -68,7 +68,7 @@ class FavoritesView : ViewManagerView(), ItemTouchCallback {
 	}
 
 	private fun load() {
-		feeds = Database.allFavorites.toMutableList()
+		feeds = ObjectStoreDatabase.allFavorites.toMutableList()
 		if (feeds?.notNullAndEmpty() == true) {
 			feedAdapter.setNewList(feeds!!.map { FeedRecyclerItem(it, fragment = this@FavoritesView) })
 			errorAdapter.setNewList(listOf())
@@ -82,7 +82,7 @@ class FavoritesView : ViewManagerView(), ItemTouchCallback {
 	override fun itemTouchOnMove(oldPosition: Int, newPosition: Int): Boolean {
 		DragDropUtil.onMove(feedAdapter, oldPosition, newPosition)
 		Collections.swap(feeds, oldPosition, newPosition)
-		feeds?.let { Database.allFavorites = it.toTypedArray() }
+		feeds?.let { ObjectStoreDatabase.allFavorites = it.toTypedArray() }
 		context.sendBroadcast(Intent("feed_state"))
 		return true
 	}

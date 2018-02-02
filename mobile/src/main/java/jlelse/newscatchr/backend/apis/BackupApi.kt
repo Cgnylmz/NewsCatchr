@@ -28,7 +28,7 @@ import com.afollestad.ason.Ason
 import com.afollestad.materialdialogs.MaterialDialog
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
-import jlelse.newscatchr.backend.helpers.Database
+import jlelse.newscatchr.backend.helpers.ObjectStoreDatabase
 import jlelse.newscatchr.extensions.progressDialog
 import jlelse.newscatchr.extensions.resStr
 import jlelse.newscatchr.extensions.tryOrNull
@@ -41,9 +41,9 @@ class BackupApi(val context: Context) {
 	fun backup() = async {
 		val progressDialog = context.progressDialog().apply { show() }
 		val backupAson = Ason()
-		val favorites = await { Ason.serializeArray<Feed>(Database.allFavorites) }
-		val bookmarks = await { Ason.serializeArray<Article>(Database.allBookmarks) }
-		val readUrls = await { Ason.serializeArray<String>(Database.allReadUrls) }
+		val favorites = await { Ason.serializeArray<Feed>(ObjectStoreDatabase.allFavorites) }
+		val bookmarks = await { Ason.serializeArray<Article>(ObjectStoreDatabase.allBookmarks) }
+		val readUrls = await { Ason.serializeArray<String>(ObjectStoreDatabase.allReadUrls) }
 		await { backupAson.put("favorites", favorites).put("bookmarks", bookmarks).put("readUrls", readUrls) }
 		progressDialog.dismiss()
 		await { tryOrNull { backupAson.toString().uploadHaste() } }.let { key ->
@@ -66,9 +66,9 @@ class BackupApi(val context: Context) {
 			if (json != null) {
 				val progressDialog = context.progressDialog().apply { show() }
 				tryOrNull { Ason(json) }?.let { restoreAson ->
-					await { tryOrNull { Database.allFavorites = restoreAson.get("favorites", Array<Feed>::class.java) } }
-					await { tryOrNull { Database.allBookmarks = restoreAson.get("bookmarks", Array<Article>::class.java) } }
-					await { tryOrNull { Database.allReadUrls = restoreAson.get("readUrls", Array<String>::class.java) } }
+					await { tryOrNull { ObjectStoreDatabase.allFavorites = restoreAson.get("favorites", Array<Feed>::class.java) } }
+					await { tryOrNull { ObjectStoreDatabase.allBookmarks = restoreAson.get("bookmarks", Array<Article>::class.java) } }
+					await { tryOrNull { ObjectStoreDatabase.allReadUrls = restoreAson.get("readUrls", Array<String>::class.java) } }
 				}
 				progressDialog.dismiss()
 				MaterialDialog.Builder(context).content(R.string.suc_restore).positiveText(android.R.string.ok).show()

@@ -113,7 +113,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 			}
 			clearHistoryPref -> {
 				doAsync {
-					Database.allLastFeeds = arrayOf()
+					ObjectStoreDatabase.allLastFeeds = arrayOf()
 					uiThread {
 						settingsContext.sendBroadcast(Intent("feed_state"))
 						Snackbar.make(mainAcivity!!.findViewById(R.id.mainactivity_container), R.string.cleared_history, Snackbar.LENGTH_SHORT).show()
@@ -163,7 +163,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 			}
 			aboutPref -> {
 				val description = "<b>The best newsreader for Android<br><i>It's the way of reading news in the future</i></b><br><br>Developer: Jan-Lukas Else<br><br><a href=\"https://newscatchr.jlelse.eu\">NewsCatchr Website</a><br><a href=\"https://github.com/jlelse/NewsCatchr-OpenSource\">Source code on GitHub</a><br><br>"
-				val statsDesc = "You already opened ${Database.allReadUrls.size} articles. Thanks for that!"
+				val statsDesc = "You already opened ${ObjectStoreDatabase.allReadUrls.size} articles. Thanks for that!"
 				MaterialDialog.Builder(settingsContext)
 						.title(R.string.app_name)
 						.content("$description$statsDesc".toHtml())
@@ -231,7 +231,7 @@ class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClic
 		var feeds: Array<Feed>?
 		if (!opml.isNullOrBlank()) await {
 			feeds = opml?.convertOpmlToFeeds()
-			feeds?.forEach { Database.addFavorites(it) }
+			feeds?.forEach { ObjectStoreDatabase.addFavorites(it) }
 			imported = feeds?.size ?: 0
 		}
 		settingsContext.sendBroadcast(Intent("feed_state"))
