@@ -29,37 +29,37 @@ import jlelse.newscatchr.extensions.tryOrNull
 /**
  * Database
  */
-object Database {
+object Database : IDatabase {
 
-	private val FAVORITES = "feeds_database"
+	private const val FAVORITES = "feeds_database"
 	private val favoritesStore = KeyObjectStore(appContext!!, FAVORITES)
-	private val BOOKMARKS = "bookmarks_database"
+	private const val BOOKMARKS = "bookmarks_database"
 	private val bookmarksStore = KeyObjectStore(appContext!!, BOOKMARKS)
-	private val READ_URLS = "urls_database"
+	private const val READ_URLS = "urls_database"
 	private val readUrlsStore = KeyObjectStore(appContext!!, READ_URLS)
-	private val LAST_FEEDS = "last_feeds"
+	private const val LAST_FEEDS = "last_feeds"
 	private val lastFeedsStore = KeyObjectStore(appContext!!, LAST_FEEDS)
 
-	private fun Feed?.safeFavorite() = this != null && !this.url().isNullOrBlank()
+	override fun Feed?.favorite() = this != null && !this.url().isNullOrBlank()
 
-	var allFavorites: Array<Feed>
+	override var allFavorites: Array<Feed>
 		get() = favoritesStore.read(FAVORITES, Array<Feed>::class.java) ?: arrayOf()
 		set(value) {
-			tryOrNull { favoritesStore.write<Array<Feed>>(FAVORITES, value.filter { it.safeFavorite() }.distinctBy { it.url() }.toTypedArray()) }
+			tryOrNull { favoritesStore.write<Array<Feed>>(FAVORITES, value.filter { it.favorite() }.distinctBy { it.url() }.toTypedArray()) }
 		}
 
 	private val allFavoritesUrls
 		get() = allFavorites.map { it.url() }
 
-	fun addFavorites(vararg feeds: Feed?) {
-		allFavorites += feeds.filterNotNull().filter { !isSavedFavorite(it.url()) }
+	override fun addFavorites(vararg feeds: Feed?) {
+		allFavorites += feeds.filterNotNull().filter { !isFavorite(it.url()) }
 	}
 
-	fun deleteFavorite(url: String?) {
+	override fun deleteFavorite(url: String?) {
 		allFavorites = allFavorites.filter { it.url() != url }.toTypedArray()
 	}
 
-	fun updateFavoriteTitle(feedUrl: String?, newTitle: String?) {
+	override fun updateFavoriteTitle(feedUrl: String?, newTitle: String?) {
 		if (!feedUrl.isNullOrBlank() && !newTitle.isNullOrBlank()) {
 			allFavorites = allFavorites.toMutableList().onEach {
 				if (it.url() == feedUrl) it.title = newTitle
@@ -67,60 +67,60 @@ object Database {
 		}
 	}
 
-	private fun Article?.safeBookmark() = this != null && !this.url.isNullOrBlank()
+	override fun Article?.bookmark() = this != null && !this.url.isNullOrBlank()
 
-	var allBookmarks: Array<Article>
+	override var allBookmarks: Array<Article>
 		get() = bookmarksStore.read(BOOKMARKS, Array<Article>::class.java) ?: arrayOf()
 		set(value) {
-			tryOrNull { bookmarksStore.write<Array<Article>>(BOOKMARKS, value.filter { it.safeBookmark() }.distinctBy { it.url }.toTypedArray()) }
+			tryOrNull { bookmarksStore.write<Array<Article>>(BOOKMARKS, value.filter { it.bookmark() }.distinctBy { it.url }.toTypedArray()) }
 		}
 
 	private val allBookmarkUrls
 		get() = allBookmarks.map { it.url }
 
 	private fun addBookmarks(vararg articles: Article?) {
-		allBookmarks += articles.filterNotNull().filter { !isSavedBookmark(it.url) }
+		allBookmarks += articles.filterNotNull().filter { !isBookmark(it.url) }
 	}
 
-	fun addBookmark(article: Article?) {
-		tryOrNull(execute = article.safeBookmark()) {
+	override fun addBookmark(article: Article?) {
+		tryOrNull(execute = article.bookmark()) {
 			addBookmarks(article)
 		}
 	}
 
-	fun deleteBookmark(url: String?) {
+	override fun deleteBookmark(url: String?) {
 		tryOrNull(execute = !url.isNullOrBlank()) {
 			allBookmarks = allBookmarks.filter { it.url != url }.toTypedArray()
 		}
 	}
 
-	var allReadUrls: Array<String>
+	override var allReadUrls: Array<String>
 		get() = readUrlsStore.read(READ_URLS, Array<String>::class.java) ?: arrayOf()
 		set(value) {
 			tryOrNull { readUrlsStore.write<Array<String>>(READ_URLS, value.distinct().toTypedArray()) }
 		}
 
-	fun addReadUrl(url: String?) = url?.let { allReadUrls += it }
+	override fun addReadUrl(url: String?) = url?.let { allReadUrls += it }
 
-	private fun Feed?.safeLastFeed() = this != null && !this.url().isNullOrBlank()
+	override fun Feed?.lastFeed() = this != null && !this.url().isNullOrBlank()
 
-	var allLastFeeds: Array<Feed>
+	override var allLastFeeds: Array<Feed>
 		get() = lastFeedsStore.read(LAST_FEEDS, Array<Feed>::class.java) ?: arrayOf()
 		set(value) {
-			tryOrNull { lastFeedsStore.write<Array<Feed>>(LAST_FEEDS, value.filter { it.safeLastFeed() }.toTypedArray()) }
+			tryOrNull { lastFeedsStore.write<Array<Feed>>(LAST_FEEDS, value.filter { it.lastFeed() }.toTypedArray()) }
 		}
 
-	fun addLastFeed(feed: Feed?) {
+	override fun addLastFeed(feed: Feed?) {
 		if (feed != null) {
 			allLastFeeds = allLastFeeds.filter { it.url() != feed.url() }.toTypedArray()
 			allLastFeeds += feed
 		}
 	}
 
-	fun isSavedFavorite(url: String?) = allFavoritesUrls.contains(url)
+	override fun isFavorite(url: String?) = allFavoritesUrls.contains(url)
 
-	fun isSavedBookmark(url: String?) = allBookmarkUrls.contains(url)
+	override fun isBookmark(url: String?) = allBookmarkUrls.contains(url)
 
-	fun isSavedReadUrl(url: String?) = allReadUrls.contains(url)
+	override fun isReadUrl(url: String?) = allReadUrls.contains(url)
 
 }

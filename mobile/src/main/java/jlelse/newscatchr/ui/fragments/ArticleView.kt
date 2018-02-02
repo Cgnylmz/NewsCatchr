@@ -54,7 +54,7 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 	private val articleContentView: ZoomTextView? by lazy { fragmentView?.find<ZoomTextView>(R.id.articlefragment_content) }
 
 	private val bookmark
-		get() = Database.isSavedBookmark(article.url)
+		get() = Database.isBookmark(article.url)
 
 	override val fabDrawable = R.drawable.ic_share
 	override val fabClick = { shareArticle() }

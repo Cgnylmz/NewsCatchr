@@ -58,7 +58,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 	private var articles = mutableListOf<Article>()
 	private val favorite
-		get() = Database.isSavedFavorite(feed.url())
+		get() = Database.isFavorite(feed.url())
 	private var feedlyLoader: FeedlyLoader? = null
 	private var editMenuItem: MenuItem? = null
 	private var continuation: String? = null
