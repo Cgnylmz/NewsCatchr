@@ -40,16 +40,13 @@ object ObjectStoreDatabase : IDatabase {
 	private const val LAST_FEEDS = "last_feeds"
 	private val lastFeedsStore = KeyObjectStore(appContext!!, LAST_FEEDS)
 
-	override fun Feed?.favorite() = this != null && !this.url().isNullOrBlank()
-
 	override var allFavorites: Array<Feed>
 		get() = favoritesStore.read(FAVORITES, Array<Feed>::class.java) ?: arrayOf()
 		set(value) {
-			tryOrNull { favoritesStore.write<Array<Feed>>(FAVORITES, value.filter { it.favorite() }.distinctBy { it.url() }.toTypedArray()) }
+			tryOrNull { favoritesStore.write<Array<Feed>>(FAVORITES, value.filter { it.safeFavorite() }.distinctBy { it.url() }.toTypedArray()) }
 		}
 
-	private val allFavoritesUrls
-		get() = allFavorites.map { it.url() }
+	private val allFavoritesUrls get() = allFavorites.map { it.url() }
 
 	override fun addFavorites(vararg feeds: Feed?) {
 		allFavorites += feeds.filterNotNull().filter { !isFavorite(it.url()) }
@@ -67,25 +64,16 @@ object ObjectStoreDatabase : IDatabase {
 		}
 	}
 
-	override fun Article?.bookmark() = this != null && !this.url.isNullOrBlank()
-
 	override var allBookmarks: Array<Article>
 		get() = bookmarksStore.read(BOOKMARKS, Array<Article>::class.java) ?: arrayOf()
 		set(value) {
-			tryOrNull { bookmarksStore.write<Array<Article>>(BOOKMARKS, value.filter { it.bookmark() }.distinctBy { it.url }.toTypedArray()) }
+			tryOrNull { bookmarksStore.write<Array<Article>>(BOOKMARKS, value.filter { it.safeBookmark() }.distinctBy { it.url }.toTypedArray()) }
 		}
 
-	private val allBookmarkUrls
-		get() = allBookmarks.map { it.url }
-
-	private fun addBookmarks(vararg articles: Article?) {
-		allBookmarks += articles.filterNotNull().filter { !isBookmark(it.url) }
-	}
+	private val allBookmarkUrls get() = allBookmarks.map { it.url }
 
 	override fun addBookmark(article: Article?) {
-		tryOrNull(execute = article.bookmark()) {
-			addBookmarks(article)
-		}
+		if (article?.safeBookmark() == true && !isBookmark(article.url)) allBookmarks += article
 	}
 
 	override fun deleteBookmark(url: String?) {
@@ -102,12 +90,10 @@ object ObjectStoreDatabase : IDatabase {
 
 	override fun addReadUrl(url: String?) = url?.let { allReadUrls += it }
 
-	override fun Feed?.lastFeed() = this != null && !this.url().isNullOrBlank()
-
 	override var allLastFeeds: Array<Feed>
 		get() = lastFeedsStore.read(LAST_FEEDS, Array<Feed>::class.java) ?: arrayOf()
 		set(value) {
-			tryOrNull { lastFeedsStore.write<Array<Feed>>(LAST_FEEDS, value.filter { it.lastFeed() }.toTypedArray()) }
+			tryOrNull { lastFeedsStore.write<Array<Feed>>(LAST_FEEDS, value.filter { it.safeLastFeed() }.toTypedArray()) }
 		}
 
 	override fun addLastFeed(feed: Feed?) {

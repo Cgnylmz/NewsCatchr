@@ -41,7 +41,7 @@ interface IDatabase {
 
 	fun addLastFeed(feed: Feed?)
 
-	fun Feed?.favorite(): Boolean
-	fun Article?.bookmark(): Boolean
-	fun Feed?.lastFeed(): Boolean
+	fun Feed?.safeFavorite(): Boolean = this != null && !this.url().isNullOrBlank()
+	fun Article?.safeBookmark(): Boolean = this != null && !this.url.isNullOrBlank()
+	fun Feed?.safeLastFeed(): Boolean = this != null && !this.url().isNullOrBlank()
 }
