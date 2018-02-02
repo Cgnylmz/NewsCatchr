@@ -33,6 +33,7 @@ import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.apis.openUrl
 import jlelse.newscatchr.backend.helpers.Database
+import jlelse.newscatchr.backend.share
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.interfaces.FAB
 import jlelse.newscatchr.ui.layout.ArticleViewUI
@@ -140,7 +141,8 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 				else Database.deleteBookmark(article.url)
 				item.icon = (if (bookmark) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, Color.WHITE)
 			}
-			R.id.browser -> (article.cdnAmpUrl ?: article.ampUrl).openUrl(context, isAmp = true, notAmpLink = article.url)
+			R.id.browser -> (article.cdnAmpUrl
+					?: article.ampUrl).openUrl(context, isAmp = true, notAmpLink = article.url)
 		}
 	}
 }

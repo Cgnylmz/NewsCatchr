@@ -18,11 +18,9 @@
 
 package jlelse.newscatchr.backend
 
-import android.support.annotation.Keep
 import com.afollestad.bridge.annotations.ContentType
 
 @ContentType("application/json")
-@Keep
 class Feed(
 		var title: String? = null,
 		var id: String? = null,

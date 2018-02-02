@@ -18,7 +18,6 @@
 
 package jlelse.newscatchr.backend.apis
 
-import android.support.annotation.Keep
 import com.afollestad.bridge.Bridge
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
@@ -27,7 +26,6 @@ import jlelse.newscatchr.backend.helpers.saveToCache
 import jlelse.newscatchr.extensions.tryOrNull
 import java.util.*
 
-@Keep
 class Feedly {
 
 	private val urlBase = "https://cloud.feedly.com/v3"
@@ -91,13 +89,10 @@ class Feedly {
 		Bridge.get(url, id, query).asClass(ArticleSearch::class.java)
 	}
 
-	@Keep
 	class Ids(var ids: Array<String>? = null, var continuation: String? = null)
 
-	@Keep
 	class FeedSearch(var results: Array<Feed>? = null, var related: Array<String>? = null)
 
-	@Keep
 	class ArticleSearch(var id: String? = null, var title: String? = null, var items: List<Article>? = null)
 
 }

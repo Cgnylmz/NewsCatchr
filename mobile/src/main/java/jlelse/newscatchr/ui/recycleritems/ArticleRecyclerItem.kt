@@ -29,6 +29,7 @@ import android.widget.TextView
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.helpers.Database
+import jlelse.newscatchr.backend.share
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.fragments.ArticleView
 import jlelse.newscatchr.ui.layout.ArticleRecyclerItemUI

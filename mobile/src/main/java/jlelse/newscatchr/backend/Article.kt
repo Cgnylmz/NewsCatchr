@@ -21,7 +21,6 @@
 package jlelse.newscatchr.backend
 
 import android.app.Activity
-import android.support.annotation.Keep
 import co.metalab.asyncawait.async
 import com.afollestad.ason.AsonName
 import com.afollestad.bridge.annotations.ContentType
@@ -31,7 +30,6 @@ import jlelse.newscatchr.backend.helpers.Preferences
 import jlelse.newscatchr.extensions.*
 
 @ContentType("application/json")
-@Keep
 class Article(
 		var id: String? = null,
 		var published: Long = 0,
@@ -56,19 +54,21 @@ class Article(
 		var cdnAmpUrl: String? = null,
 		var ampUrl: String? = null,
 		var url: String? = null
-) {
-	fun process(): Article {
-		content = (summaryContent.blankNull() ?: content)?.cleanHtml()
-		excerpt = content?.toHtml().toString().buildExcerpt(30)
-		url = canonicalHref.blankNull() ?: alternateHref.blankNull() ?: url
-		visualUrl = enclosureHref.blankNull() ?: visualUrl
-		return this
-	}
+)
 
-	fun share(context: Activity) {
-		async {
-			val newUrl = await { if (Preferences.urlShortener) tryOrNull { url?.shortUrl() } ?: url else url }
-			context.share("\"$title\"", "$title - $newUrl")
+fun Article.process(): Article {
+	content = (summaryContent.blankNull() ?: content)?.cleanHtml()
+	excerpt = content?.toHtml().toString().buildExcerpt(30)
+	url = canonicalHref.blankNull() ?: alternateHref.blankNull() ?: url
+	visualUrl = enclosureHref.blankNull() ?: visualUrl
+	return this
+}
+
+fun Article.share(context: Activity) {
+	async {
+		val newUrl = await {
+			if (Preferences.urlShortener) tryOrNull { url?.shortUrl() } ?: url else url
 		}
+		context.share("\"$title\"", "$title - $newUrl")
 	}
 }
