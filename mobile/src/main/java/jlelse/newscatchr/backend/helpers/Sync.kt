@@ -25,6 +25,7 @@ import com.evernote.android.job.JobManager
 import com.evernote.android.job.JobRequest
 import jlelse.newscatchr.appContext
 import jlelse.newscatchr.backend.loaders.FeedlyLoader
+import jlelse.newscatchr.backend.loaders.ILoader
 import jlelse.newscatchr.extensions.notNullAndEmpty
 import jlelse.newscatchr.extensions.tryOrNull
 
@@ -60,9 +61,9 @@ fun sync(context: Context): String? = tryOrNull {
 	if (appContext == null) appContext = context.applicationContext
 	Database.allFavorites.forEach {
 		FeedlyLoader().apply {
-			type = FeedlyLoader.FeedTypes.FEED
+			type = ILoader.FeedTypes.FEED
 			feedUrl = "feed/" + it.url()
-			ranked = FeedlyLoader.Ranked.NEWEST
+			ranked = ILoader.Ranked.NEWEST
 		}.items(false)
 	}
 	System.out.println("Sync finished")

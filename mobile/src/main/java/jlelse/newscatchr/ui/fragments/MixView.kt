@@ -31,6 +31,7 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.loaders.FeedlyLoader
+import jlelse.newscatchr.backend.loaders.ILoader
 import jlelse.newscatchr.extensions.nothingFound
 import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
 import jlelse.newscatchr.ui.recycleritems.ArticleRecyclerItem
@@ -56,7 +57,7 @@ class MixView(val feedId: String) : ViewManagerView() {
 			loadArticles(false)
 		}
 		feedlyLoader = FeedlyLoader().apply {
-			type = FeedlyLoader.FeedTypes.MIX
+			type = ILoader.FeedTypes.MIX
 			feedUrl = feedId
 		}
 		if (recyclerOne?.adapter == null) {

@@ -39,6 +39,7 @@ import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.helpers.Database
 import jlelse.newscatchr.backend.loaders.FeedlyLoader
+import jlelse.newscatchr.backend.loaders.ILoader
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.activities.MainActivity
 import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
@@ -72,12 +73,12 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 			recyclerOne?.adapter = adapter
 		}
 		feedlyLoader = FeedlyLoader().apply {
-			type = FeedlyLoader.FeedTypes.FEED
+			type = ILoader.FeedTypes.FEED
 			feedUrl = "feed/" + feed.url()
 			continuation = this@FeedView.continuation
 			ranked = when (this@FeedView.ranked) {
-				"oldest" -> FeedlyLoader.Ranked.OLDEST
-				else -> FeedlyLoader.Ranked.NEWEST
+				"oldest" -> ILoader.Ranked.OLDEST
+				else -> ILoader.Ranked.NEWEST
 			}
 		}
 		loadArticles(true)
@@ -150,14 +151,14 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 							feedlyLoader?.apply {
 								continuation = ""
 								ranked = when (which) {
-									1 -> FeedlyLoader.Ranked.OLDEST
-									else -> FeedlyLoader.Ranked.NEWEST
+									1 -> ILoader.Ranked.OLDEST
+									else -> ILoader.Ranked.NEWEST
 								}
 							}
 							articles.clear()
 							loadArticles()
 							ranked = when (feedlyLoader?.ranked) {
-								FeedlyLoader.Ranked.OLDEST -> "oldest"
+								ILoader.Ranked.OLDEST -> "oldest"
 								else -> "newest"
 							}
 							true
@@ -175,7 +176,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 								progressDialog.show()
 								val foundArticles = await {
 									FeedlyLoader().apply {
-										type = FeedlyLoader.FeedTypes.SEARCH
+										type = ILoader.FeedTypes.SEARCH
 										feedUrl = "feed/" + feed.url()
 										this.query = query.toString()
 									}.items(false)
