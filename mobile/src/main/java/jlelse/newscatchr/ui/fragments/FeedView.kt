@@ -37,9 +37,9 @@ import com.mikepenz.fastadapter_extensions.items.ProgressItem
 import com.mikepenz.fastadapter_extensions.scroll.EndlessRecyclerOnScrollListener
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
-import jlelse.newscatchr.backend.helpers.ObjectStoreDatabase
 import jlelse.newscatchr.backend.loaders.FeedlyLoader
 import jlelse.newscatchr.backend.loaders.ILoader
+import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.activities.MainActivity
 import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
@@ -58,7 +58,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 	private var articles = mutableListOf<Article>()
 	private val favorite
-		get() = ObjectStoreDatabase.isFavorite(feed.url())
+		get() = database.isFavorite(feed.url())
 	private var feedlyLoader: FeedlyLoader? = null
 	private var editMenuItem: MenuItem? = null
 	private var continuation: String? = null
@@ -82,7 +82,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 			}
 		}
 		loadArticles(true)
-		ObjectStoreDatabase.addLastFeed(feed)
+		database.addLastFeed(feed)
 		context.sendBroadcast(Intent("feed_state"))
 		return fragmentView
 	}
@@ -135,8 +135,8 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 	override fun onOptionsItemSelected(item: MenuItem?) {
 		when (item?.itemId) {
 			R.id.favorite -> {
-				if (!favorite) ObjectStoreDatabase.addFavorites(feed)
-				else ObjectStoreDatabase.deleteFavorite(feed.url())
+				if (!favorite) database.addFavorites(feed)
+				else database.deleteFavorite(feed.url())
 				item.icon = (if (favorite) R.drawable.ic_favorite_universal else R.drawable.ic_favorite_border_universal).resDrw(context, Color.WHITE)
 				editMenuItem?.isVisible = favorite
 			}
@@ -196,7 +196,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 						.title(R.string.edit_feed_title)
 						.input(null, feed.title, { _, input ->
 							if (!input.toString().isBlank()) {
-								ObjectStoreDatabase.updateFavoriteTitle(feed.url(), input.toString())
+								database.updateFavoriteTitle(feed.url(), input.toString())
 								feed.title = input.toString()
 								title = feed.title
 								(context as? MainActivity)?.refreshFragmentDependingTitle(this)

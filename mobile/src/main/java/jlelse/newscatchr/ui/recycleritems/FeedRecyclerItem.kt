@@ -27,7 +27,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import jlelse.newscatchr.backend.Feed
-import jlelse.newscatchr.backend.helpers.ObjectStoreDatabase
+import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.hideView
 import jlelse.newscatchr.extensions.resClr
 import jlelse.newscatchr.extensions.resDrw
@@ -58,13 +58,13 @@ class FeedRecyclerItem(val feed: Feed? = null, val isLast: Boolean = false, val 
 			viewHolder.itemView.setOnClickListener {
 				fragment?.openView(FeedView(feed = feed).withTitle(feed.title))
 			}
-			viewHolder.favorite.setImageDrawable((if (ObjectStoreDatabase.isFavorite(feed.url())) R.drawable.ic_favorite_universal else R.drawable.ic_favorite_border_universal).resDrw(context, R.color.colorPrimaryText.resClr(context)))
+			viewHolder.favorite.setImageDrawable((if (database.isFavorite(feed.url())) R.drawable.ic_favorite_universal else R.drawable.ic_favorite_border_universal).resDrw(context, R.color.colorPrimaryText.resClr(context)))
 			viewHolder.favorite.setOnClickListener {
-				if (ObjectStoreDatabase.isFavorite(feed.url())) {
-					ObjectStoreDatabase.deleteFavorite(feed.url())
+				if (database.isFavorite(feed.url())) {
+					database.deleteFavorite(feed.url())
 					viewHolder.favorite.setImageDrawable(R.drawable.ic_favorite_border_universal.resDrw(context, R.color.colorPrimaryText.resClr(context)))
 				} else {
-					ObjectStoreDatabase.addFavorites(feed)
+					database.addFavorites(feed)
 					viewHolder.favorite.setImageDrawable(R.drawable.ic_favorite_universal.resDrw(context, R.color.colorPrimaryText.resClr(context)))
 				}
 				context.sendBroadcast(Intent("favorites_updated"))

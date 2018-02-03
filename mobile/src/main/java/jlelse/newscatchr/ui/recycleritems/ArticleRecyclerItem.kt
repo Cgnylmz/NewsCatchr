@@ -28,8 +28,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
-import jlelse.newscatchr.backend.helpers.ObjectStoreDatabase
 import jlelse.newscatchr.backend.share
+import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.fragments.ArticleView
 import jlelse.newscatchr.ui.layout.ArticleRecyclerItemUI
@@ -54,7 +54,7 @@ class ArticleRecyclerItem(val article: Article? = null, val fragment: ViewManage
 		if (!article?.title.isNullOrBlank()) {
 			viewHolder.title.showView()
 			viewHolder.title.text = article?.title
-			viewHolder.title.setTypeface(null, if (ObjectStoreDatabase.isReadUrl(article?.url)) Typeface.BOLD_ITALIC else Typeface.BOLD)
+			viewHolder.title.setTypeface(null, if (database.isReadUrl(article?.url)) Typeface.BOLD_ITALIC else Typeface.BOLD)
 		} else viewHolder.title.hideView()
 		if ((article?.published?.toInt() ?: 0) != 0) {
 			viewHolder.details.showView()
@@ -86,14 +86,14 @@ class ArticleRecyclerItem(val article: Article? = null, val fragment: ViewManage
 		viewHolder.itemView.setOnClickListener {
 			if (article != null) fragment?.openView(ArticleView(article = article).withTitle(article.originTitle))
 		}
-		viewHolder.bookmark.setImageDrawable((if (ObjectStoreDatabase.isBookmark(article?.url)) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, R.color.colorPrimaryText.resClr(context)))
+		viewHolder.bookmark.setImageDrawable((if (database.isBookmark(article?.url)) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, R.color.colorPrimaryText.resClr(context)))
 		viewHolder.bookmark.setOnClickListener {
 			if (article != null) {
-				if (ObjectStoreDatabase.isBookmark(article.url)) {
-					ObjectStoreDatabase.deleteBookmark(article.url)
+				if (database.isBookmark(article.url)) {
+					database.deleteBookmark(article.url)
 					viewHolder.bookmark.setImageDrawable(R.drawable.ic_bookmark_border_universal.resDrw(context, R.color.colorPrimaryText.resClr(context)))
 				} else {
-					ObjectStoreDatabase.addBookmark(article)
+					database.addBookmark(article)
 					viewHolder.bookmark.setImageDrawable(R.drawable.ic_bookmark_universal.resDrw(context, R.color.colorPrimaryText.resClr(context)))
 				}
 			}

@@ -30,8 +30,7 @@ import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter_extensions.drag.ItemTouchCallback
 import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback
 import com.mikepenz.fastadapter_extensions.utilities.DragDropUtil
-import jlelse.newscatchr.backend.Feed
-import jlelse.newscatchr.backend.helpers.ObjectStoreDatabase
+import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.notNullAndEmpty
 import jlelse.newscatchr.extensions.resStr
 import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
@@ -43,7 +42,6 @@ import jlelse.readit.R
 import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
-import java.util.*
 
 @SuppressLint("ViewConstructor")
 class FavoritesView : ViewManagerView(), ItemTouchCallback {
@@ -52,7 +50,6 @@ class FavoritesView : ViewManagerView(), ItemTouchCallback {
 	private val feedAdapter = ItemAdapter<FeedRecyclerItem>()
 	private val errorAdapter = ItemAdapter<CustomTextRecyclerItem>()
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
-	private var feeds: MutableList<Feed>? = null
 
 	override fun onCreateView(): View? {
 		super.onCreateView()
@@ -68,9 +65,8 @@ class FavoritesView : ViewManagerView(), ItemTouchCallback {
 	}
 
 	private fun load() {
-		feeds = ObjectStoreDatabase.allFavorites.toMutableList()
-		if (feeds?.notNullAndEmpty() == true) {
-			feedAdapter.setNewList(feeds!!.map { FeedRecyclerItem(it, fragment = this@FavoritesView) })
+		if (database.allFavorites.notNullAndEmpty()) {
+			feedAdapter.setNewList(database.allFavorites.map { FeedRecyclerItem(it, fragment = this@FavoritesView) })
 			errorAdapter.setNewList(listOf())
 		} else {
 			feedAdapter.setNewList(listOf())
@@ -81,8 +77,7 @@ class FavoritesView : ViewManagerView(), ItemTouchCallback {
 
 	override fun itemTouchOnMove(oldPosition: Int, newPosition: Int): Boolean {
 		DragDropUtil.onMove(feedAdapter, oldPosition, newPosition)
-		Collections.swap(feeds, oldPosition, newPosition)
-		feeds?.let { ObjectStoreDatabase.allFavorites = it.toTypedArray() }
+		database.swapFavorites(oldPosition, newPosition)
 		context.sendBroadcast(Intent("feed_state"))
 		return true
 	}

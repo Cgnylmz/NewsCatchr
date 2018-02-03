@@ -32,8 +32,8 @@ import android.widget.TextView
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.apis.openUrl
-import jlelse.newscatchr.backend.helpers.ObjectStoreDatabase
 import jlelse.newscatchr.backend.share
+import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.interfaces.FAB
 import jlelse.newscatchr.ui.layout.ArticleViewUI
@@ -54,7 +54,7 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 	private val articleContentView: ZoomTextView? by lazy { fragmentView?.find<ZoomTextView>(R.id.articlefragment_content) }
 
 	private val bookmark
-		get() = ObjectStoreDatabase.isBookmark(article.url)
+		get() = database.isBookmark(article.url)
 
 	override val fabDrawable = R.drawable.ic_share
 	override val fabClick = { shareArticle() }
@@ -63,7 +63,7 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 		super.onCreateView()
 		fragmentView = ArticleViewUI().createView(AnkoContext.create(context, this))
 		showArticle(article)
-		ObjectStoreDatabase.addReadUrl(article.url)
+		database.addReadUrl(article.url)
 		return fragmentView
 	}
 
@@ -137,8 +137,8 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 		super.onOptionsItemSelected(item)
 		when (item?.itemId) {
 			R.id.bookmark -> {
-				if (!bookmark) ObjectStoreDatabase.addBookmark(article)
-				else ObjectStoreDatabase.deleteBookmark(article.url)
+				if (!bookmark) database.addBookmark(article)
+				else database.deleteBookmark(article.url)
 				item.icon = (if (bookmark) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, Color.WHITE)
 			}
 			R.id.browser -> (article.cdnAmpUrl

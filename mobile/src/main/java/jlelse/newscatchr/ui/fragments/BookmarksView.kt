@@ -29,7 +29,7 @@ import android.view.View
 import co.metalab.asyncawait.async
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
-import jlelse.newscatchr.backend.helpers.ObjectStoreDatabase
+import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.notNullAndEmpty
 import jlelse.newscatchr.extensions.resStr
 import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
@@ -64,7 +64,7 @@ class BookmarksView : ViewManagerView() {
 
 	private fun loadArticles() = async {
 		refreshOne?.showIndicator()
-		val articles = await { ObjectStoreDatabase.allBookmarks }
+		val articles = await { database.allBookmarks }
 		if (articles.notNullAndEmpty()) {
 			bookmarkAdapter.setNewList(articles.map { ArticleRecyclerItem(it, this@BookmarksView) })
 			errorAdapter.setNewList(listOf())

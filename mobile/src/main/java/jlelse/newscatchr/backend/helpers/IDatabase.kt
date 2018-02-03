@@ -22,24 +22,26 @@ import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 
 interface IDatabase {
-	var allFavorites: Array<Feed>
-	var allBookmarks: Array<Article>
-	var allReadUrls: Array<String>
-	var allLastFeeds: Array<Feed>
+	var allFavorites: MutableList<Feed>
+	var allBookmarks: MutableList<Article>
+	var allReadUrls: MutableList<String>
+	var allLastFeeds: MutableList<Feed>
 
 	fun addFavorites(vararg feeds: Feed?)
 	fun deleteFavorite(url: String?)
 	fun updateFavoriteTitle(feedUrl: String?, newTitle: String?)
+	fun swapFavorites(position1: Int, position2: Int)
 	fun isFavorite(url: String?): Boolean
 
 	fun addBookmark(article: Article?)
 	fun deleteBookmark(url: String?)
 	fun isBookmark(url: String?): Boolean
 
-	fun addReadUrl(url: String?): Unit?
+	fun addReadUrl(url: String?)
 	fun isReadUrl(url: String?): Boolean
 
 	fun addLastFeed(feed: Feed?)
+	fun deleteAllLastFeeds()
 
 	fun Feed?.safeFavorite(): Boolean = this != null && !this.url().isNullOrBlank()
 	fun Article?.safeBookmark(): Boolean = this != null && !this.url.isNullOrBlank()
