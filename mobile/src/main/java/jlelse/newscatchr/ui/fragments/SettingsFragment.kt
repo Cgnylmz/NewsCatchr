@@ -48,7 +48,7 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.uiThread
 
 class SettingsFragment : PreferenceFragmentCompat(), Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
-	private var settingsContext: Context = context ?: mainAcivity ?: appContext!!
+	private var settingsContext: Context = context ?: mainAcivity ?: appContext
 
 	private var syncReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {

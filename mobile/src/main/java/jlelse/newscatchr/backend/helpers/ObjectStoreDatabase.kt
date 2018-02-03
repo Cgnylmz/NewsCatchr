@@ -33,13 +33,13 @@ import java.util.*
 class ObjectStoreDatabase : IDatabase {
 
 	private val FAVORITES = "feeds_database"
-	private val favoritesStore = KeyObjectStore(appContext!!, FAVORITES)
+	private val favoritesStore = KeyObjectStore(appContext, FAVORITES)
 	private val BOOKMARKS = "bookmarks_database"
-	private val bookmarksStore = KeyObjectStore(appContext!!, BOOKMARKS)
+	private val bookmarksStore = KeyObjectStore(appContext, BOOKMARKS)
 	private val READURLS = "urls_database"
-	private val readUrlsStore = KeyObjectStore(appContext!!, READURLS)
+	private val readUrlsStore = KeyObjectStore(appContext, READURLS)
 	private val LASTFEEDS = "last_feeds"
-	private val lastFeedsStore = KeyObjectStore(appContext!!, LASTFEEDS)
+	private val lastFeedsStore = KeyObjectStore(appContext, LASTFEEDS)
 
 	override var allFavorites: MutableList<Feed>
 		get() = favoritesStore.read(FAVORITES, Array<Feed>::class.java)?.toMutableList()

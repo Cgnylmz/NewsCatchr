@@ -59,7 +59,9 @@ class SyncJob : Job() {
 
 fun sync(context: Context): String? = tryOrNull {
 	System.out.println("Sync started")
-	if (appContext == null) appContext = context.applicationContext
+	// AppContext and database are probably not initialized yet
+	appContext = context.applicationContext
+	database = ObjectStoreDatabase()
 	database.allFavorites.forEach {
 		FeedlyLoader().apply {
 			type = ILoader.FeedTypes.FEED

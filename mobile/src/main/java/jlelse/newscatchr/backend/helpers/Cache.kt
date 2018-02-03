@@ -28,28 +28,28 @@ import jlelse.newscatchr.appContext
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.extensions.tryOrNull
 
-fun <T> T?.saveToCache(key: String?) = KeyObjectStore(appContext!!, name = "cache", cache = true).write<T>(key?.formatForCache(), this)
+fun <T> T?.saveToCache(key: String?) = KeyObjectStore(appContext, name = "cache", cache = true).write<T>(key?.formatForCache(), this)
 
-fun <T> readFromCache(key: String?, type: Class<T>): T? = KeyObjectStore(appContext!!, name = "cache", cache = true).read(key?.formatForCache(), type)
+fun <T> readFromCache(key: String?, type: Class<T>): T? = KeyObjectStore(appContext, name = "cache", cache = true).read(key?.formatForCache(), type)
 
 fun String.formatForCache(): String = tryOrNull { replace("[^0-9a-zA-Z]".toRegex(), "") } ?: this
 
-fun isArticleCached(id: String): Boolean = KeyObjectStore(appContext!!, name = "article_cache", cache = true).exists(id.formatForCache())
+fun isArticleCached(id: String): Boolean = KeyObjectStore(appContext, name = "article_cache", cache = true).exists(id.formatForCache())
 
 fun getCachedArticle(id: String): Article? = tryOrNull {
-	if (isArticleCached(id)) KeyObjectStore(appContext!!, name = "article_cache", cache = true).read(id.formatForCache(), Article::class.java)
+	if (isArticleCached(id)) KeyObjectStore(appContext, name = "article_cache", cache = true).read(id.formatForCache(), Article::class.java)
 	else null
 }
 
 fun Article.saveToCache() {
-	if (!id.isNullOrBlank()) KeyObjectStore(appContext!!, name = "article_cache", cache = true).write<Article>(id!!.formatForCache(), this)
+	if (!id.isNullOrBlank()) KeyObjectStore(appContext, name = "article_cache", cache = true).write<Article>(id!!.formatForCache(), this)
 }
 
 fun Context.clearCache(finished: () -> Unit?) {
 	async {
 		await {
-			KeyObjectStore(appContext!!, name = "cache", cache = true).destroy()
-			KeyObjectStore(appContext!!, name = "article_cache", cache = true).destroy()
+			KeyObjectStore(appContext, name = "cache", cache = true).destroy()
+			KeyObjectStore(appContext, name = "article_cache", cache = true).destroy()
 			Glide.get(this@clearCache).clearDiskCache()
 		}
 		finished()

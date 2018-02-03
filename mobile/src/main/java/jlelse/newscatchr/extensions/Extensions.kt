@@ -56,7 +56,7 @@ fun String.convertOpmlToFeeds() = tryOrNull {
 }
 
 
-fun String.buildExcerpt(words: Int) = split(" ").toMutableList().filter { !it.isNullOrBlank() && it != "\n" }.take(words).joinToString(separator = " ", postfix = "...").trim()
+fun String.buildExcerpt(words: Int) = split(" ").toMutableList().filter { !it.isBlank() && it != "\n" }.take(words).joinToString(separator = " ", postfix = "...").trim()
 
 fun String?.blankNull() = if (isNullOrBlank()) null else this
 
@@ -82,16 +82,18 @@ fun <T> tryOrNull(print: Boolean = false, execute: Boolean = true, code: () -> T
 
 fun sharedPref(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
 
-fun Int.resStr() = tryOrNull { appContext?.resources?.getString(this) }
+fun Int.resStr() = tryOrNull { appContext.resources?.getString(this) }
 
-fun Int.resStrArr(): Array<out String>? = tryOrNull { appContext?.resources?.getStringArray(this) }
+fun Int.resStrArr(): Array<out String>? = tryOrNull { appContext.resources?.getStringArray(this) }
 
-fun Int.resIntArr() = tryOrNull { appContext?.resources?.getIntArray(this) }
+fun Int.resIntArr() = tryOrNull { appContext.resources?.getIntArray(this) }
 
 fun Int.resDrw(context: Context?, color: Int? = null) = tryOrNull {
-	AppCompatResources.getDrawable(context ?: appContext!!, this)?.apply {
+	AppCompatResources.getDrawable(context ?: appContext, this)?.apply {
 		if (color != null) DrawableCompat.setTint(this, color)
 	}
 }
 
-fun Int.resClr(context: Context?) = tryOrNull { ContextCompat.getColor(context ?: appContext!!, this) }
+fun Int.resClr(context: Context?) = tryOrNull {
+	ContextCompat.getColor(context ?: appContext, this)
+}

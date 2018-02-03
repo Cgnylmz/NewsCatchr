@@ -46,7 +46,7 @@ class NewsCatchr : Application() {
 }
 
 lateinit var appContext: Context
+lateinit var database: IDatabase
 var customTabsHelperFragment: CustomTabsHelperFragment? = null
 var lastTab = 0
 var mainAcivity: MainActivity? = null
-lateinit var database: IDatabase
