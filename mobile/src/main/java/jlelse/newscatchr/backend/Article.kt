@@ -27,6 +27,7 @@ import com.afollestad.bridge.annotations.ContentType
 import jlelse.newscatchr.backend.apis.share
 import jlelse.newscatchr.backend.apis.shortUrl
 import jlelse.newscatchr.backend.helpers.Preferences
+import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
 
 @ContentType("application/json")
@@ -72,3 +73,5 @@ fun Article.share(context: Activity) {
 		context.share("\"$title\"", "$title - $newUrl")
 	}
 }
+
+fun Article?.isBookmark(): Boolean = database.isBookmark(this?.url)

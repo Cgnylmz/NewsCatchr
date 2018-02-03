@@ -28,6 +28,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
+import jlelse.newscatchr.backend.isBookmark
 import jlelse.newscatchr.backend.share
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
@@ -86,10 +87,10 @@ class ArticleRecyclerItem(val article: Article? = null, val fragment: ViewManage
 		viewHolder.itemView.setOnClickListener {
 			if (article != null) fragment?.openView(ArticleView(article = article).withTitle(article.originTitle))
 		}
-		viewHolder.bookmark.setImageDrawable((if (database.isBookmark(article?.url)) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, R.color.colorPrimaryText.resClr(context)))
+		viewHolder.bookmark.setImageDrawable((if (article.isBookmark()) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, R.color.colorPrimaryText.resClr(context)))
 		viewHolder.bookmark.setOnClickListener {
 			if (article != null) {
-				if (database.isBookmark(article.url)) {
+				if (article.isBookmark()) {
 					database.deleteBookmark(article.url)
 					viewHolder.bookmark.setImageDrawable(R.drawable.ic_bookmark_border_universal.resDrw(context, R.color.colorPrimaryText.resClr(context)))
 				} else {

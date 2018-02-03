@@ -32,6 +32,7 @@ import android.widget.TextView
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.apis.openUrl
+import jlelse.newscatchr.backend.isBookmark
 import jlelse.newscatchr.backend.share
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
@@ -52,9 +53,6 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 	private val detailsView: TextView? by lazy { fragmentView?.find<TextView>(R.id.articlefragment_details) }
 	private val tagsBox: FlexboxLayout? by lazy { fragmentView?.find<FlexboxLayout>(R.id.articlefragment_tagsbox) }
 	private val articleContentView: ZoomTextView? by lazy { fragmentView?.find<ZoomTextView>(R.id.articlefragment_content) }
-
-	private val bookmark
-		get() = database.isBookmark(article.url)
 
 	override val fabDrawable = R.drawable.ic_share
 	override val fabClick = { shareArticle() }
@@ -130,16 +128,16 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 	override fun inflateMenu(inflater: MenuInflater, menu: Menu?) {
 		super.inflateMenu(inflater, menu)
 		inflater.inflate(R.menu.articlefragment, menu)
-		menu?.findItem(R.id.bookmark)?.icon = (if (bookmark) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, Color.WHITE)
+		menu?.findItem(R.id.bookmark)?.icon = (if (article.isBookmark()) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, Color.WHITE)
 	}
 
 	override fun onOptionsItemSelected(item: MenuItem?) {
 		super.onOptionsItemSelected(item)
 		when (item?.itemId) {
 			R.id.bookmark -> {
-				if (!bookmark) database.addBookmark(article)
+				if (!article.isBookmark()) database.addBookmark(article)
 				else database.deleteBookmark(article.url)
-				item.icon = (if (bookmark) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, Color.WHITE)
+				item.icon = (if (article.isBookmark()) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, Color.WHITE)
 			}
 			R.id.browser -> (article.cdnAmpUrl
 					?: article.ampUrl).openUrl(context, isAmp = true, notAmpLink = article.url)
