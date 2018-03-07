@@ -5,9 +5,9 @@ buildscript {
     ext.TARGET_SDK = 27
     ext.MIN_SDK = 17
     ext.BUILD_TOOLS = "27.0.3"
-    ext.SUPPORT_LIBS = "27.0.2"
+    ext.SUPPORT_LIBS = "27.1.0"
     ext.PLAY_SERVICES = "11.6.2"
-    ext.KOTLIN = "1.2.21"
+    ext.KOTLIN = "1.2.30"
     ext.ANKO = "0.10.4"
     repositories {
         jcenter()
