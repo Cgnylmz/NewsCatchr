@@ -34,18 +34,6 @@ import jlelse.newscatchr.backend.apis.openUrl
 import jlelse.newscatchr.mainAcivity
 import jlelse.readit.R
 
-fun View.hideView() {
-	visibility = View.GONE
-}
-
-fun View.makeInvisible() {
-	visibility = View.INVISIBLE
-}
-
-fun View.showView() {
-	visibility = View.VISIBLE
-}
-
 fun ImageView.loadImage(url: String?) {
 	clearGlide()
 	tryOrNull { Glide.with(this).load(url).into(this) }

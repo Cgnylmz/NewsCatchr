@@ -29,6 +29,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.view.isGone
+import androidx.view.isVisible
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.apis.openUrl
@@ -78,16 +80,16 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 
 	private fun image(visualUrl: String? = "") {
 		if (!visualUrl.isNullOrBlank()) visualView?.apply {
-			showView()
+			isVisible = true
 			loadImage(visualUrl)
-		} else visualView?.hideView()
+		} else visualView?.isGone = true
 	}
 
 	private fun title(title: String? = "") {
 		if (!title.isNullOrBlank()) titleView?.apply {
-			showView()
+			isVisible = true
 			text = title?.toHtml()
-		} else titleView?.hideView()
+		} else titleView?.isGone = true
 	}
 
 	private fun details(author: String? = "", originTitle: String? = "", published: Long? = 0) {
@@ -102,25 +104,25 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 			details += DateUtils.getRelativeTimeSpanString(published!!)
 		}
 		if (!details.isNullOrBlank()) detailsView?.apply {
-			showView()
+			isVisible = true
 			text = details
-		} else detailsView?.hideView()
+		} else detailsView?.isGone = true
 	}
 
 	private fun content(content: String? = "") {
 		if (!content.isNullOrBlank()) articleContentView?.apply {
-			showView()
+			isVisible = true
 			text = content?.toHtml()
 			applyLinks(true)
-		} else articleContentView?.hideView()
+		} else articleContentView?.isGone = true
 	}
 
 	private fun keywords(keywords: Array<String>? = null) {
 		if (keywords.notNullAndEmpty()) tagsBox?.apply {
-			showView()
+			isVisible = true
 			removeAllViews()
 			addTags(this@ArticleView, keywords)
-		} else tagsBox?.hideView()
+		} else tagsBox?.isGone = true
 	}
 
 	private fun shareArticle() = article.share(context)

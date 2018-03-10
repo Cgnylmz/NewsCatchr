@@ -26,12 +26,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.view.isVisible
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.database
-import jlelse.newscatchr.extensions.hideView
 import jlelse.newscatchr.extensions.resClr
 import jlelse.newscatchr.extensions.resDrw
-import jlelse.newscatchr.extensions.showView
 import jlelse.newscatchr.ui.fragments.FeedView
 import jlelse.newscatchr.ui.layout.FeedRecyclerItemUI
 import jlelse.readit.R
@@ -70,7 +69,7 @@ class FeedRecyclerItem(val feed: Feed? = null, val isLast: Boolean = false, val 
 				context.sendBroadcast(Intent("favorites_updated"))
 			}
 		}
-		if (isLast) viewHolder.divider.hideView() else viewHolder.divider.showView()
+		viewHolder.divider.isVisible = !isLast
 	}
 
 	private fun setTitleText(title: String?, textView: TextView) {

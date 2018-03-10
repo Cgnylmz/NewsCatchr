@@ -32,13 +32,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.view.isInvisible
+import androidx.view.isVisible
 import com.afollestad.materialdialogs.MaterialDialog
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.apis.openUrl
 import jlelse.newscatchr.backend.apis.share
 import jlelse.newscatchr.backend.helpers.Preferences
 import jlelse.newscatchr.customTabsHelperFragment
-import jlelse.newscatchr.extensions.*
+import jlelse.newscatchr.extensions.resDrw
+import jlelse.newscatchr.extensions.resStr
+import jlelse.newscatchr.extensions.searchForFeeds
+import jlelse.newscatchr.extensions.tryOrNull
 import jlelse.newscatchr.lastTab
 import jlelse.newscatchr.mainAcivity
 import jlelse.newscatchr.ui.fragments.BookmarksView
@@ -147,10 +152,12 @@ class MainActivity : ViewManagerActivity() {
 		// Check Back Arrow
 		if (isRootView()) {
 			supportActionBar?.setDisplayHomeAsUpEnabled(false)
-			appbar?.setExpanded(if (currentFragment is FragmentManipulation) currentFragment.expanded ?: false else false)
+			appbar?.setExpanded(if (currentFragment is FragmentManipulation) currentFragment.expanded
+					?: false else false)
 		} else {
 			supportActionBar?.setDisplayHomeAsUpEnabled(true)
-			appbar?.setExpanded(if (currentFragment is FragmentManipulation) currentFragment.expanded ?: true else true)
+			appbar?.setExpanded(if (currentFragment is FragmentManipulation) currentFragment.expanded
+					?: true else true)
 		}
 		// Check Title
 		refreshFragmentDependingTitle(currentFragment)
@@ -161,11 +168,11 @@ class MainActivity : ViewManagerActivity() {
 			fab?.let {
 				if (currentFragment.fabDrawable != null) it.setImageDrawable(currentFragment.fabDrawable?.resDrw(this, Color.WHITE))
 				it.setOnClickListener { currentFragment.fabClick() }
-				it.showView()
+				it.isVisible = true
 				it.show()
 			}
 		} else {
-			fab?.makeInvisible()
+			fab?.isInvisible = true
 		}
 	}
 

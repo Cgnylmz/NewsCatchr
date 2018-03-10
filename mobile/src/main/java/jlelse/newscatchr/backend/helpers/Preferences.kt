@@ -19,6 +19,7 @@
 package jlelse.newscatchr.backend.helpers
 
 import android.content.SharedPreferences
+import androidx.content.edit
 import jlelse.newscatchr.extensions.resStr
 import jlelse.newscatchr.extensions.sharedPref
 import jlelse.readit.R
@@ -29,28 +30,25 @@ import jlelse.readit.R
  */
 object Preferences {
 
-	private fun write(write: (SharedPreferences.Editor) -> Unit) = sharedPref().edit().apply { write(this) }.apply()
+	private fun write(write: (SharedPreferences.Editor) -> Unit) = sharedPref().edit { write(this) }
 
 	private fun read(): SharedPreferences = sharedPref()
 
 	val customTabs: Boolean
 		get() = read().getBoolean(R.string.prefs_key_custom_tabs.resStr(), true)
 
-	var amp: Boolean
+	val amp: Boolean
 		get() = read().getBoolean(R.string.prefs_key_amp.resStr(), true)
-		set(value) = write { e -> e.putBoolean(R.string.prefs_key_amp.resStr(), value) }
 
-	var urlShortener: Boolean
+	val urlShortener: Boolean
 		get() = read().getBoolean(R.string.prefs_key_url_shortener.resStr(), true)
-		set(value) = write { e -> e.putBoolean(R.string.prefs_key_url_shortener.resStr(), value) }
 
 	var textScaleFactor: Float
 		get() = read().getFloat("textScaleFactor", 1.0f)
 		set(value) = write { e -> e.putFloat("textScaleFactor", value) }
 
-	var syncEnabled: Boolean
+	val syncEnabled: Boolean
 		get() = read().getBoolean(R.string.prefs_key_sync.resStr(), false)
-		set(value) = write { e -> e.putBoolean(R.string.prefs_key_sync.resStr(), value) }
 
 	var syncInterval: Int
 		get() = read().getInt(R.string.prefs_key_sync_interval.resStr(), 30)
@@ -64,12 +62,10 @@ object Preferences {
 		get() = read().getBoolean("tutorial", false)
 		set(value) = write { e -> e.putBoolean("tutorial", value) }
 
-	var showRecentFeeds: Boolean
+	val showRecentFeeds: Boolean
 		get() = read().getBoolean(R.string.prefs_key_show_recent_feeds.resStr(), true)
-		set(value) = write { e -> e.putBoolean(R.string.prefs_key_show_recent_feeds.resStr(), value) }
 
-	var showRecommendedFeeds: Boolean
+	val showRecommendedFeeds: Boolean
 		get() = read().getBoolean(R.string.prefs_key_show_recommended_feeds.resStr(), true)
-		set(value) = write { e -> e.putBoolean(R.string.prefs_key_show_recommended_feeds.resStr(), value) }
 
 }

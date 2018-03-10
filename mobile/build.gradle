@@ -90,6 +90,7 @@ dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN"
     implementation 'co.metalab.asyncawait:asyncawait:1.0.0'
+    implementation 'androidx.core:core-ktx:0.2'
     // Anko
     implementation "org.jetbrains.anko:anko-sdk15:$ANKO"
     implementation "org.jetbrains.anko:anko-support-v4:$ANKO"

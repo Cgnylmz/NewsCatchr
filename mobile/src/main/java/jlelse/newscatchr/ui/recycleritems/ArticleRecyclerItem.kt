@@ -26,6 +26,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.view.isGone
+import androidx.view.isVisible
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.isBookmark
@@ -53,36 +55,32 @@ class ArticleRecyclerItem(val article: Article? = null, val fragment: ViewManage
 		super.bindView(viewHolder, payloads)
 		val context = viewHolder.itemView.context
 		if (!article?.title.isNullOrBlank()) {
-			viewHolder.title.showView()
+			viewHolder.title.isVisible = true
 			viewHolder.title.text = article?.title
 			viewHolder.title.setTypeface(null, if (database.isReadUrl(article?.url)) Typeface.BOLD_ITALIC else Typeface.BOLD)
-		} else viewHolder.title.hideView()
+		} else viewHolder.title.isGone = true
 		if ((article?.published?.toInt() ?: 0) != 0) {
-			viewHolder.details.showView()
+			viewHolder.details.isVisible = true
 			val detailText = DateUtils.getRelativeTimeSpanString(article!!.published)
 			viewHolder.details.text = detailText
-		} else {
-			viewHolder.details.hideView()
-		}
+		} else viewHolder.details.isGone = true
 		if (!article?.content.isNullOrBlank()) {
-			viewHolder.content.showView()
+			viewHolder.content.isVisible = true
 			viewHolder.content.text = article?.excerpt
-		} else {
-			viewHolder.content.hideView()
-		}
+		} else viewHolder.content.isGone = true
 		if (article?.keywords.notNullAndEmpty()) {
-			viewHolder.tagsBox.showView()
+			viewHolder.tagsBox.isVisible = true
 			viewHolder.tagsBox.removeAllViews()
 			viewHolder.tagsBox.addTags(fragment!!, article?.keywords?.take(3)?.toTypedArray())
 		} else {
 			//viewHolder.tagsBox.hideView()
 		}
 		if (!article?.visualUrl.isNullOrBlank()) {
-			viewHolder.visual.showView()
+			viewHolder.visual.isVisible = true
 			viewHolder.visual.loadImage(article?.visualUrl)
 		} else {
 			viewHolder.visual.clearGlide()
-			viewHolder.visual.hideView()
+			viewHolder.visual.isGone = true
 		}
 		viewHolder.itemView.setOnClickListener {
 			if (article != null) fragment?.openView(ArticleView(article = article).withTitle(article.originTitle))
