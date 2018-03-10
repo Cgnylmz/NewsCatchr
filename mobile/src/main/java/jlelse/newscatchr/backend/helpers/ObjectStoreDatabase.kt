@@ -24,6 +24,7 @@ import jlelse.kos.KeyObjectStore
 import jlelse.newscatchr.appContext
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
+import jlelse.newscatchr.backend.url
 import jlelse.newscatchr.extensions.tryOrNull
 import java.util.*
 

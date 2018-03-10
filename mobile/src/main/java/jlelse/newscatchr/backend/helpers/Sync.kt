@@ -26,6 +26,7 @@ import com.evernote.android.job.JobRequest
 import jlelse.newscatchr.appContext
 import jlelse.newscatchr.backend.loaders.FeedlyLoader
 import jlelse.newscatchr.backend.loaders.ILoader
+import jlelse.newscatchr.backend.url
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.notNullAndEmpty
 import jlelse.newscatchr.extensions.tryOrNull

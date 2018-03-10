@@ -28,6 +28,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.view.isVisible
 import jlelse.newscatchr.backend.Feed
+import jlelse.newscatchr.backend.url
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.resClr
 import jlelse.newscatchr.extensions.resDrw

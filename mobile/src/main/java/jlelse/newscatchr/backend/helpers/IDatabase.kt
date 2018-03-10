@@ -20,6 +20,7 @@ package jlelse.newscatchr.backend.helpers
 
 import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
+import jlelse.newscatchr.backend.url
 
 interface IDatabase {
 	var allFavorites: MutableList<Feed>

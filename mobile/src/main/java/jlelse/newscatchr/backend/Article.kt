@@ -31,7 +31,7 @@ import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
 
 @ContentType("application/json")
-class Article(
+data class Article(
 		var id: String? = null,
 		var published: Long = 0,
 		var author: String? = null,
@@ -58,12 +58,17 @@ class Article(
 )
 
 fun Article.process(): Article {
-	content = (summaryContent.blankNull() ?: content)?.cleanHtml()
-	excerpt = content?.toHtml().toString().buildExcerpt(30)
-	url = canonicalHref.blankNull() ?: alternateHref.blankNull() ?: url
-	visualUrl = enclosureHref.blankNull() ?: visualUrl
+	content = content()
+	excerpt = excerpt()
+	url = url()
+	visualUrl = image()
 	return this
 }
+
+fun Article.content() = (summaryContent.blankNull() ?: content)?.cleanHtml()
+fun Article.excerpt() = content?.toHtml().toString().buildExcerpt(30)
+fun Article.url() = canonicalHref.blankNull() ?: alternateHref.blankNull() ?: url
+fun Article.image() = enclosureHref.blankNull() ?: visualUrl
 
 fun Article.share(context: Activity) {
 	async {

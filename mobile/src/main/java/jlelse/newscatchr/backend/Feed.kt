@@ -19,13 +19,14 @@
 package jlelse.newscatchr.backend
 
 import com.afollestad.bridge.annotations.ContentType
+import jlelse.newscatchr.extensions.blankNull
 
 @ContentType("application/json")
-class Feed(
+data class Feed(
 		var title: String? = null,
 		var id: String? = null,
 		var feedId: String? = null,
 		var website: String? = null
-) {
-	fun url() = (id ?: feedId)?.replace("^feed/".toRegex(), "")
-}
+)
+
+fun Feed.url() = (id.blankNull() ?: feedId)?.replace("^feed/".toRegex(), "")

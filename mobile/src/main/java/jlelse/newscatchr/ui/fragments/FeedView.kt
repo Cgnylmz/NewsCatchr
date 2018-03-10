@@ -39,6 +39,7 @@ import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.loaders.FeedlyLoader
 import jlelse.newscatchr.backend.loaders.ILoader
+import jlelse.newscatchr.backend.url
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.activities.MainActivity
