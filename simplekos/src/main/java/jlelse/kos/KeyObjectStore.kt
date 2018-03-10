@@ -50,8 +50,8 @@ class KeyObjectStore(context: Context, name: String = "default", private val fil
 	fun <T> write(key: String?, item: Any?): KeyObjectStore {
 		if (item == null) delete(key)
 		else if (key != null && key.isNotBlank()) {
-			val file = File(folder, key + ".$fileExtension")
-			if (item.javaClass.isArray) tryOrNull { saveAsonArray(file, Ason.serializeArray<T>(item)) }
+			val file = File(folder, "$key.$fileExtension")
+			if (item is Array<*>) tryOrNull { saveAsonArray(file, Ason.serializeArray<T>(item)) }
 			else tryOrNull { saveAson(file, Ason.serialize(item)) }
 		}
 		return this
@@ -65,7 +65,7 @@ class KeyObjectStore(context: Context, name: String = "default", private val fil
 	 * @return Current KeyObjectStore
 	 */
 	fun delete(key: String?): KeyObjectStore {
-		tryOrNull(key != null && key.isNotBlank()) { File(folder, key + ".$fileExtension").delete() }
+		tryOrNull(key != null && key.isNotBlank()) { File(folder, "$key.$fileExtension").delete() }
 		return this
 	}
 
@@ -79,7 +79,7 @@ class KeyObjectStore(context: Context, name: String = "default", private val fil
 	 * @return Queried item or null
 	 */
 	fun <T> read(key: String?, type: Class<T>, defaultValue: T? = null): T? = if (key != null) tryOrNull {
-		val file = File(folder, key + ".$fileExtension")
+		val file = File(folder, "$key.$fileExtension")
 		if (file.exists()) {
 			if (type.isArray) Ason.deserialize(AsonArray<T>(file.readText()), type)
 			else Ason.deserialize(Ason(file.readText()), type)
@@ -100,7 +100,7 @@ class KeyObjectStore(context: Context, name: String = "default", private val fil
 	 *
 	 * @return True if key exists
 	 */
-	fun exists(key: String?): Boolean = if (key != null && key.isNotBlank()) File(folder, key + ".$fileExtension").exists() else false
+	fun exists(key: String?): Boolean = if (key != null && key.isNotBlank()) File(folder, "$key.$fileExtension").exists() else false
 
 	private fun saveAson(file: File, ason: Ason) {
 		if (!file.exists()) tryOrNull { file.createNewFile() }
