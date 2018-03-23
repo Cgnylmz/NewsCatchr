@@ -47,7 +47,7 @@ class FeedlyLoader : SourceLoader() {
 				link = article.canonical ?: article.alternate,
 				image = article.visual,
 				feedTitle = article.origin,
-				content = article.summary ?: article.content,
+				content = article.content ?: article.summary,
 				amp = article.cdnAmpUrl,
 				tags = article.keywords
 		)
