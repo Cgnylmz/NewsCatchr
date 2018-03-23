@@ -5,6 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/NewsCatchr.iml" filepath="$PROJECT_DIR$/NewsCatchr.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
       <module fileurl="file://$PROJECT_DIR$/simplekos/simplekos.iml" filepath="$PROJECT_DIR$/simplekos/simplekos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/source-base/source-base.iml" filepath="$PROJECT_DIR$/source-base/source-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/source-earl/source-earl.iml" filepath="$PROJECT_DIR$/source-earl/source-earl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/source-feedly/source-feedly.iml" filepath="$PROJECT_DIR$/source-feedly/source-feedly.iml" />
       <module fileurl="file://$PROJECT_DIR$/viewmanager/viewmanager.iml" filepath="$PROJECT_DIR$/viewmanager/viewmanager.iml" />
     </modules>
   </component>

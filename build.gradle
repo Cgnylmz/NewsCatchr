@@ -7,7 +7,7 @@ buildscript {
     ext.BUILD_TOOLS = "27.0.3"
     ext.SUPPORT_LIBS = "27.1.0"
     ext.PLAY_SERVICES = "11.6.2"
-    ext.KOTLIN = "1.2.30"
+    ext.KOTLIN = "1.2.31"
     ext.ANKO = "0.10.4"
     repositories {
         jcenter()

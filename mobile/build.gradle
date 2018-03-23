@@ -73,7 +73,7 @@ dependencies {
     }
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     implementation 'com.google.android:flexbox:0.3.2'
-    implementation 'com.evernote:android-job:1.2.4'
+    implementation 'com.evernote:android-job:1.2.5'
     implementation 'org.jsoup:jsoup:1.11.2'
     implementation 'me.zhanghai.android.customtabshelper:library:1.0.4'
     implementation 'com.github.faruktoptas:FancyShowCaseView:1.0.0'
@@ -100,4 +100,7 @@ dependencies {
     // Other
     implementation project(':viewmanager')
     implementation project(':simplekos')
+    implementation (project(':source-earl')) {
+        transitive = true
+    }
 }
