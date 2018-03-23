@@ -34,8 +34,8 @@ fun searchForFeeds(context: Context, query: String? = null) {
 	val load = { finalQuery: String ->
 		context.async {
 			progressDialog.show()
-			var foundFeeds: Array<Feed>? = null
-			var foundRelated: Array<String>? = null
+			var foundFeeds: List<Feed>? = null
+			var foundRelated: List<String>? = null
 			await {
 				Feedly().feedSearch(finalQuery, 100, null, null) { feeds, related ->
 					foundFeeds = feeds

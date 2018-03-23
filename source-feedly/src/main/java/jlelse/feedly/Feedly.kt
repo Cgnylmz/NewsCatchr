@@ -20,9 +20,10 @@ package jlelse.feedly
 
 import com.afollestad.ason.Ason
 import com.afollestad.ason.AsonName
-import com.github.kittinunf.fuel.core.ResponseDeserializable
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
+import jlelse.commons.Deserializer
+import jlelse.commons.ListDeserializer
 
 object Feedly {
 
@@ -94,14 +95,6 @@ object Feedly {
 	data class Ids(var ids: List<String>? = null, var continuation: String? = null)
 
 	data class ArticleSearch(var id: String? = null, var title: String? = null, var items: List<Article>? = null)
-
-	class Deserializer<out T : Any>(private val objectClass: Class<T>) : ResponseDeserializable<T> {
-		override fun deserialize(content: String): T = Ason.deserialize(content, objectClass)
-	}
-
-	class ListDeserializer<out T : Any>(private val objectClass: Class<T>) : ResponseDeserializable<List<T>> {
-		override fun deserialize(content: String): List<T> = Ason.deserializeList(content, objectClass)
-	}
 
 }
 

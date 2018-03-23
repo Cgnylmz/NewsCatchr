@@ -18,7 +18,8 @@
 
 package jlelse.newscatchr.backend.apis
 
-import com.afollestad.bridge.Bridge
+import com.github.kittinunf.fuel.httpGet
+import jlelse.commons.Deserializer
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.helpers.readFromCache
 import jlelse.newscatchr.backend.helpers.saveToCache
@@ -28,34 +29,29 @@ import java.util.*
 class Feedly {
 
 	private val urlBase = "https://cloud.feedly.com/v3"
-	private val urlStreamId = "streamId="
-	private val urlContinuation = "continuation="
-	private val urlCount = "count="
-	private val urlRanked = "ranked="
-	private val urlQuery = "query="
 
-	fun feedSearch(query: String?, count: Int? = null, locale: String? = null, promoted: Boolean? = null, callback: (feeds: Array<Feed>?, related: Array<String>?) -> Unit) {
-		var feeds: Array<Feed>? = null
-		var related: Array<String>? = null
-		tryOrNull {
-			var url = "$urlBase/search/feeds?$urlQuery%s"
-			if (count != null) url += "&$urlCount$count"
-			if (!locale.isNullOrBlank()) url += "&locale=$locale"
-			if (promoted != null) url += "&promoted=$promoted"
-			val search = Bridge.get(url, query).asClass(FeedSearch::class.java)
-			feeds = search?.results
-			related = search?.related
+	fun feedSearch(query: String?, count: Int? = null, locale: String? = null, promoted: Boolean? = null, callback: (feeds: List<Feed>?, related: List<String>?) -> Unit) {
+		try {
+			val search = "$urlBase/search/feeds".httpGet(mutableListOf<Pair<String, Any?>>(
+					"query" to query
+			).apply {
+				if (count != null) add("count" to count)
+				if (!locale.isNullOrBlank()) add("locale" to locale)
+				if (promoted != null) add("promoted" to promoted)
+			}).responseObject(Deserializer(FeedSearch::class.java)).third.component1()
+			callback(search?.results, search?.related)
+		} catch (e: Exception) {
+			callback(null, null)
 		}
-		callback(feeds, related)
 	}
 
-	fun recommendedFeeds(locale: String? = Locale.getDefault().language, cache: Boolean, callback: (feeds: Array<Feed>?, related: Array<String>?) -> Unit) {
-		var feeds: Array<Feed>? = if (cache) readFromCache("recFeeds$locale", Array<Feed>::class.java) else null
-		var related: Array<String>? = if (cache) readFromCache("recFeedsRelated$locale", Array<String>::class.java) else null
-		if (!cache || feeds == null) {
+	fun recommendedFeeds(locale: String? = Locale.getDefault().language, cache: Boolean, callback: (feeds: List<Feed>?, related: List<String>?) -> Unit) {
+		var feeds: List<Feed>? = if (cache) readFromCache("recFeeds$locale", listOf<Feed>().javaClass) else null
+		var related: List<String>? = if (cache) readFromCache("recFeedsRelated$locale", listOf<String>().javaClass) else null
+		if (!cache || feeds == null || related == null) {
 			tryOrNull {
 				feedSearch("news", 30, locale, true) { feedsTemp, relatedTemp ->
-					feeds = feedsTemp?.take(30)?.toTypedArray().apply { saveToCache("recFeeds$locale") }
+					feeds = feedsTemp?.take(30)?.apply { saveToCache("recFeeds$locale") }
 					related = relatedTemp?.apply { saveToCache("recFeedsRelated$locale") }
 				}
 			}
@@ -63,9 +59,7 @@ class Feedly {
 		callback(feeds, related)
 	}
 
-	class Ids(var ids: Array<String>? = null, var continuation: String? = null)
-
-	class FeedSearch(var results: Array<Feed>? = null, var related: Array<String>? = null)
+	class FeedSearch(var results: List<Feed>? = null, var related: List<String>? = null)
 
 }
 

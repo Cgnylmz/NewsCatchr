@@ -50,8 +50,8 @@ import org.jetbrains.anko.find
 
 @SuppressLint("ViewConstructor")
 class HomeView : ViewManagerView(), FAB, FragmentManipulation {
-	private var recFeeds: Array<Feed>? = null
-	private var recRelated: Array<String>? = null
+	private var recFeeds: List<Feed>? = null
+	private var recRelated: List<String>? = null
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.homefragment_recyclerone) }
 
@@ -109,7 +109,7 @@ class HomeView : ViewManagerView(), FAB, FragmentManipulation {
 			if (lastFeeds.notNullAndEmpty()) {
 				lastHeaderAdapter.add(HeaderRecyclerItem(title = R.string.last_feeds.resStr()!!))
 				lastAdapter.add(lastFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == lastFeeds.lastIndex) })
-				lastFooterAdapter.add(MoreRecyclerItem { openView(FeedListView(feeds = database.allLastFeeds.reversed().toTypedArray()).withTitle(R.string.last_feeds.resStr())) })
+				lastFooterAdapter.add(MoreRecyclerItem { openView(FeedListView(feeds = database.allLastFeeds.reversed()).withTitle(R.string.last_feeds.resStr())) })
 			}
 		}
 	}

@@ -63,14 +63,11 @@ dependencies {
     implementation 'com.mikepenz:fastadapter:3.2.4'
     implementation 'com.mikepenz:fastadapter-extensions:3.2.4@aar'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-    implementation('com.afollestad:bridge:5.1.2') {
-        exclude group: 'org.json', module: 'json'
-        exclude group: 'com.intellij', module: 'annotations'
-    }
     implementation('com.afollestad:ason:1.4.16') {
         exclude group: 'org.json', module: 'json'
         exclude group: 'com.intellij', module: 'annotations'
     }
+    implementation 'com.github.kittinunf.fuel:fuel-android:1.12.1'
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     implementation 'com.google.android:flexbox:0.3.2'
     implementation 'com.evernote:android-job:1.2.5'
@@ -98,15 +95,16 @@ dependencies {
     implementation "org.jetbrains.anko:anko-appcompat-v7:$ANKO"
     implementation "org.jetbrains.anko:anko-design:$ANKO"
     // Other
+    implementation project(':commons')
     implementation project(':viewmanager')
     implementation project(':simplekos')
     implementation (project(':source-base')) {
-        transitive = true
+        //transitive = true
     }
     implementation (project(':source-earl')) {
-        transitive = true
+        //transitive = true
     }
     implementation (project(':source-feedly')) {
-        transitive = true
+        //transitive = true
     }
 }

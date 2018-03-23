@@ -23,7 +23,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.customtabs.CustomTabsIntent
-import com.afollestad.bridge.Bridge
+import com.github.kittinunf.fuel.android.extension.responseJson
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.fuel.httpPost
 import jlelse.newscatchr.backend.helpers.Preferences
 import jlelse.newscatchr.extensions.blankNull
 import jlelse.newscatchr.extensions.resClr
@@ -44,34 +46,30 @@ fun Context.share(title: String, text: String) {
 
 // Short Url
 fun String.shortUrl(): String {
-	if (isNotBlank()) {
-		Bridge.get("https://tny.im/yourls-api.php?action=shorturl&format=simple&url=$this")
-				.asString()
-				.let { return it ?: this }
-	} else return this
+	return if (isNotBlank()) {
+		"https://tny.im/yourls-api.php".httpGet(listOf(
+				"action" to "shorturl",
+				"format" to "simple",
+				"url" to this
+		)).responseString().third.component1() ?: this
+	} else this
 }
 
 // Hastebin
 fun String.uploadHaste(): String? {
-	if (isNotBlank()) {
-		Bridge.post("https://hastebin.com/documents")
+	return if (isNotBlank()) {
+		"https://hastebin.com/documents".httpPost()
 				.body(this)
-				.contentType("plain/text")
-				.asAsonObject()
-				.let {
-					return it?.getString("key").blankNull()
-				}
-	} else return null
+				.header("Content-Type" to "plain/text")
+				.responseJson().third.component1()?.obj()?.optString("key").blankNull()
+	} else null
 }
 
 fun String.downloadHaste(): String? {
-	if (isNotBlank()) {
-		Bridge.get("https://hastebin.com/documents/$this")
-				.asAsonObject()
-				.let {
-					return it?.getString("data").blankNull()
-				}
-	} else return null
+	return if (isNotBlank()) {
+		"https://hastebin.com/documents/$this".httpGet()
+				.responseJson().third.component1()?.obj()?.optString("data").blankNull()
+	} else null
 }
 
 // AMP
@@ -80,7 +78,8 @@ fun String.ampUrl() = "https://mercury.postlight.com/amp?url=${URLEncoder.encode
 // Open Url
 fun String?.openUrl(activity: Activity, amp: Boolean = true, isAmp: Boolean = false, notAmpLink: String? = null) {
 	val ampAllowed = Preferences.amp && amp
-	(if (ampAllowed && (!isAmp || (isAmp && this@openUrl.isNullOrBlank()))) (this@openUrl ?: notAmpLink)?.ampUrl()
+	(if (ampAllowed && (!isAmp || (isAmp && this@openUrl.isNullOrBlank()))) (this@openUrl
+			?: notAmpLink)?.ampUrl()
 	else if (ampAllowed && isAmp) this@openUrl
 	else notAmpLink ?: this@openUrl)?.let { finalUrl ->
 		val alternateIntent = Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl))

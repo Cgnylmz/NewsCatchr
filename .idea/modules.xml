@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/NewsCatchr.iml" filepath="$PROJECT_DIR$/NewsCatchr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/commons/commons.iml" filepath="$PROJECT_DIR$/commons/commons.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
       <module fileurl="file://$PROJECT_DIR$/simplekos/simplekos.iml" filepath="$PROJECT_DIR$/simplekos/simplekos.iml" />
       <module fileurl="file://$PROJECT_DIR$/source-base/source-base.iml" filepath="$PROJECT_DIR$/source-base/source-base.iml" />

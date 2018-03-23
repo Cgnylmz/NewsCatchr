@@ -1,1 +1,1 @@
-include ':mobile', ':viewmanager', ':simplekos', ':source-base', ':source-earl', ':source-feedly'
+include ':mobile', ':viewmanager', ':simplekos', ':source-base', ':source-earl', ':source-feedly', ':commons'

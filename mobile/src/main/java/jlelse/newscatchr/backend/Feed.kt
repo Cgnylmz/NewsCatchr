@@ -18,10 +18,8 @@
 
 package jlelse.newscatchr.backend
 
-import com.afollestad.bridge.annotations.ContentType
 import jlelse.newscatchr.extensions.blankNull
 
-@ContentType("application/json")
 data class Feed(
 		var title: String? = null,
 		var id: String? = null,
