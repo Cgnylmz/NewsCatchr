@@ -33,7 +33,7 @@ import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 
-class TagsRecyclerItem(val tags: Array<String>? = null, val fragment: ViewManagerView? = null) : NCAbstractItem<TagsRecyclerItem, TagsRecyclerItem.ViewHolder>() {
+class TagsRecyclerItem(val tags: List<String>? = null, val fragment: ViewManagerView? = null) : NCAbstractItem<TagsRecyclerItem, TagsRecyclerItem.ViewHolder>() {
 
 	override fun getType(): Int {
 		return R.id.tags_item_id
@@ -56,7 +56,7 @@ class TagsRecyclerItem(val tags: Array<String>? = null, val fragment: ViewManage
 	}
 }
 
-fun FlexboxLayout.addTags(fragment: ViewManagerView?, tags: Array<out String?>? = null) = tryOrNull {
+fun FlexboxLayout.addTags(fragment: ViewManagerView?, tags: List<String?>? = null) = tryOrNull {
 	tags?.filterNotNull()?.forEach { tag ->
 		addView(TagUI().createView(AnkoContext.Companion.create(context, this)).apply {
 			find<TextView>(R.id.tag_text).apply {

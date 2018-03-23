@@ -25,8 +25,8 @@ import co.metalab.asyncawait.async
 import com.bumptech.glide.Glide
 import jlelse.kos.KeyObjectStore
 import jlelse.newscatchr.appContext
-import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.extensions.tryOrNull
+import jlelse.sourcebase.Article
 
 fun <T> T?.saveToCache(key: String?) = KeyObjectStore(appContext, name = "cache", cache = true).write<T>(key?.formatForCache(), this)
 
@@ -42,7 +42,7 @@ fun getCachedArticle(id: String): Article? = tryOrNull {
 }
 
 fun Article.saveToCache() {
-	if (!id.isNullOrBlank()) KeyObjectStore(appContext, name = "article_cache", cache = true).write<Article>(id!!.formatForCache(), this)
+	if (!id.isBlank()) KeyObjectStore(appContext, name = "article_cache", cache = true).write<Article>(id.formatForCache(), this)
 }
 
 fun Context.clearCache(finished: () -> Unit?) {

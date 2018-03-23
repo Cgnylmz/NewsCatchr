@@ -26,7 +26,6 @@ import android.support.design.widget.Snackbar
 import co.metalab.asyncawait.async
 import com.afollestad.ason.Ason
 import com.afollestad.materialdialogs.MaterialDialog
-import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.progressDialog
@@ -34,6 +33,7 @@ import jlelse.newscatchr.extensions.resStr
 import jlelse.newscatchr.extensions.tryOrNull
 import jlelse.newscatchr.mainAcivity
 import jlelse.readit.R
+import jlelse.sourcebase.Article
 import org.jetbrains.anko.clipboardManager
 
 class BackupApi(val context: Context) {

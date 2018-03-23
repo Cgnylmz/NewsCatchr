@@ -29,14 +29,12 @@ import android.widget.TextView
 import androidx.view.isGone
 import androidx.view.isVisible
 import com.google.android.flexbox.FlexboxLayout
-import jlelse.newscatchr.backend.Article
-import jlelse.newscatchr.backend.isBookmark
-import jlelse.newscatchr.backend.share
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.fragments.ArticleView
 import jlelse.newscatchr.ui.layout.ArticleRecyclerItemUI
 import jlelse.readit.R
+import jlelse.sourcebase.Article
 import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
@@ -57,39 +55,39 @@ class ArticleRecyclerItem(val article: Article? = null, val fragment: ViewManage
 		if (!article?.title.isNullOrBlank()) {
 			viewHolder.title.isVisible = true
 			viewHolder.title.text = article?.title
-			viewHolder.title.setTypeface(null, if (database.isReadUrl(article?.url)) Typeface.BOLD_ITALIC else Typeface.BOLD)
+			viewHolder.title.setTypeface(null, if (database.isReadUrl(article?.link)) Typeface.BOLD_ITALIC else Typeface.BOLD)
 		} else viewHolder.title.isGone = true
-		if ((article?.published?.toInt() ?: 0) != 0) {
+		if ((article?.time?.toInt() ?: 0) != 0) {
 			viewHolder.details.isVisible = true
-			val detailText = DateUtils.getRelativeTimeSpanString(article!!.published)
+			val detailText = DateUtils.getRelativeTimeSpanString(article!!.time ?: 0)
 			viewHolder.details.text = detailText
 		} else viewHolder.details.isGone = true
 		if (!article?.content.isNullOrBlank()) {
 			viewHolder.content.isVisible = true
-			viewHolder.content.text = article?.excerpt
+			viewHolder.content.text = article?.excerpt()
 		} else viewHolder.content.isGone = true
-		if (article?.keywords.notNullAndEmpty()) {
+		if (article?.tags.notNullAndEmpty()) {
 			viewHolder.tagsBox.isVisible = true
 			viewHolder.tagsBox.removeAllViews()
-			viewHolder.tagsBox.addTags(fragment!!, article?.keywords?.take(3)?.toTypedArray())
+			viewHolder.tagsBox.addTags(fragment!!, article?.tags?.take(3))
 		} else {
 			//viewHolder.tagsBox.hideView()
 		}
-		if (!article?.visualUrl.isNullOrBlank()) {
+		if (!article?.image.isNullOrBlank()) {
 			viewHolder.visual.isVisible = true
-			viewHolder.visual.loadImage(article?.visualUrl)
+			viewHolder.visual.loadImage(article?.image)
 		} else {
 			viewHolder.visual.clearGlide()
 			viewHolder.visual.isGone = true
 		}
 		viewHolder.itemView.setOnClickListener {
-			if (article != null) fragment?.openView(ArticleView(article = article).withTitle(article.originTitle))
+			if (article != null) fragment?.openView(ArticleView(article = article).withTitle(article.feedTitle))
 		}
 		viewHolder.bookmark.setImageDrawable((if (article.isBookmark()) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, R.color.colorPrimaryText.resClr(context)))
 		viewHolder.bookmark.setOnClickListener {
 			if (article != null) {
 				if (article.isBookmark()) {
-					database.deleteBookmark(article.url)
+					database.deleteBookmark(article.link)
 					viewHolder.bookmark.setImageDrawable(R.drawable.ic_bookmark_border_universal.resDrw(context, R.color.colorPrimaryText.resClr(context)))
 				} else {
 					database.addBookmark(article)

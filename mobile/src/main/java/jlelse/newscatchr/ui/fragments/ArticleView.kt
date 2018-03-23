@@ -32,10 +32,7 @@ import android.widget.TextView
 import androidx.view.isGone
 import androidx.view.isVisible
 import com.google.android.flexbox.FlexboxLayout
-import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.apis.openUrl
-import jlelse.newscatchr.backend.isBookmark
-import jlelse.newscatchr.backend.share
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
 import jlelse.newscatchr.ui.interfaces.FAB
@@ -43,6 +40,7 @@ import jlelse.newscatchr.ui.layout.ArticleViewUI
 import jlelse.newscatchr.ui.recycleritems.addTags
 import jlelse.newscatchr.ui.views.ZoomTextView
 import jlelse.readit.R
+import jlelse.sourcebase.Article
 import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
@@ -63,18 +61,18 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 		super.onCreateView()
 		fragmentView = ArticleViewUI().createView(AnkoContext.create(context, this))
 		showArticle(article)
-		database.addReadUrl(article.url)
+		database.addReadUrl(article.link)
 		return fragmentView
 	}
 
 	private fun showArticle(article: Article?) {
 		if (article != null) {
 			this@ArticleView.article = article
-			image(article.visualUrl)
+			image(article.image)
 			title(article.title)
-			details(article.author, article.originTitle, article.published)
+			details(article.author, article.title, article.time)
 			content(article.content)
-			keywords(article.keywords)
+			keywords(article.tags)
 		}
 	}
 
@@ -117,7 +115,7 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 		} else articleContentView?.isGone = true
 	}
 
-	private fun keywords(keywords: Array<String>? = null) {
+	private fun keywords(keywords: List<String>? = null) {
 		if (keywords.notNullAndEmpty()) tagsBox?.apply {
 			isVisible = true
 			removeAllViews()
@@ -138,11 +136,10 @@ class ArticleView(var article: Article) : ViewManagerView(), FAB {
 		when (item?.itemId) {
 			R.id.bookmark -> {
 				if (!article.isBookmark()) database.addBookmark(article)
-				else database.deleteBookmark(article.url)
+				else database.deleteBookmark(article.link)
 				item.icon = (if (article.isBookmark()) R.drawable.ic_bookmark_universal else R.drawable.ic_bookmark_border_universal).resDrw(context, Color.WHITE)
 			}
-			R.id.browser -> (article.cdnAmpUrl
-					?: article.ampUrl).openUrl(context, isAmp = true, notAmpLink = article.url)
+			R.id.browser -> (article.amp).openUrl(context, isAmp = true, notAmpLink = article.link)
 		}
 	}
 }

@@ -144,10 +144,10 @@ class HomeView : ViewManagerView(), FAB, FragmentManipulation {
 				recommendedHeaderAdapter.add(HeaderRecyclerItem(title = R.string.recommendations.resStr()!!))
 				recommendedAdapter.add(tempRecFeeds.mapIndexed { i, feed -> FeedRecyclerItem(feed = feed, fragment = this@HomeView, isLast = i == tempRecFeeds.lastIndex) })
 				recommendedFooterAdapter.add(listOf(MoreRecyclerItem {
-					openView(FeedListView(feeds = recFeeds, tags = recRelated).withTitle(R.string.recommendations.resStr()))
+					openView(FeedListView(feeds = recFeeds, tags = recRelated?.toList()).withTitle(R.string.recommendations.resStr()))
 				}))
 			}
-			if (recRelated.notNullAndEmpty()) recommendedTagsAdapter.add(TagsRecyclerItem(recRelated, this@HomeView))
+			if (recRelated.notNullAndEmpty()) recommendedTagsAdapter.add(TagsRecyclerItem(recRelated?.toList(), this@HomeView))
 			refresh?.hideIndicator()
 		}
 	}

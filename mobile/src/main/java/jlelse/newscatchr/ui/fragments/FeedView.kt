@@ -35,10 +35,8 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter_extensions.items.ProgressItem
 import com.mikepenz.fastadapter_extensions.scroll.EndlessRecyclerOnScrollListener
-import jlelse.newscatchr.backend.Article
+import jlelse.feedly.FeedlyLoader
 import jlelse.newscatchr.backend.Feed
-import jlelse.newscatchr.backend.loaders.FeedlyLoader
-import jlelse.newscatchr.backend.loaders.ILoader
 import jlelse.newscatchr.backend.url
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*
@@ -47,6 +45,8 @@ import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
 import jlelse.newscatchr.ui.recycleritems.ArticleRecyclerItem
 import jlelse.newscatchr.ui.views.SwipeRefreshLayout
 import jlelse.readit.R
+import jlelse.sourcebase.Article
+import jlelse.sourcebase.SourceLoader
 import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.*
 
@@ -60,7 +60,7 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 	private var articles = mutableListOf<Article>()
 	private val favorite
 		get() = database.isFavorite(feed.url())
-	private var feedlyLoader: FeedlyLoader? = null
+	private var feedLoader: SourceLoader? = null
 	private var editMenuItem: MenuItem? = null
 	private var continuation: String? = null
 	private var ranked: String? = null
@@ -73,13 +73,13 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 			val adapter: FastAdapter<ArticleRecyclerItem> = FastAdapter.with(listOf(articleAdapter, footerAdapter))
 			recyclerOne?.adapter = adapter
 		}
-		feedlyLoader = FeedlyLoader().apply {
-			type = ILoader.FeedTypes.FEED
+		feedLoader = FeedlyLoader().apply {
+			type = SourceLoader.FeedTypes.FEED
 			feedUrl = "feed/" + feed.url()
 			continuation = this@FeedView.continuation
 			ranked = when (this@FeedView.ranked) {
-				"oldest" -> ILoader.Ranked.OLDEST
-				else -> ILoader.Ranked.NEWEST
+				"oldest" -> SourceLoader.Ranked.OLDEST
+				else -> SourceLoader.Ranked.NEWEST
 			}
 		}
 		loadArticles(true)
@@ -91,10 +91,10 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 	private fun loadArticles(cache: Boolean = false) = async {
 		refreshOne?.showIndicator()
 		if (articles.isEmpty() || !cache) await {
-			feedlyLoader?.items(cache)?.let {
+			feedLoader?.items(context, cache)?.let {
 				articles = it.toMutableList()
 			}
-			continuation = feedlyLoader?.continuation
+			continuation = feedLoader?.continuation
 		}
 		if (articles.notNullAndEmpty()) {
 			recyclerOne?.clearOnScrollListeners()
@@ -102,8 +102,8 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 			recyclerOne?.addOnScrollListener(object : EndlessRecyclerOnScrollListener(footerAdapter) {
 				override fun onLoadMore(currentPage: Int) {
 					async {
-						val newArticles = await { feedlyLoader?.moreItems() }
-						continuation = feedlyLoader?.continuation
+						val newArticles = await { feedLoader?.moreItems(context) }
+						continuation = feedLoader?.continuation
 						if (newArticles != null && newArticles.isNotEmpty()) {
 							articles.addAll(newArticles)
 							articleAdapter.add(newArticles.map { ArticleRecyclerItem(article = it, fragment = this@FeedView) })
@@ -149,17 +149,17 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 							"oldest" -> 1
 							else -> 0
 						}) { _, _, which, _ ->
-							feedlyLoader?.apply {
+							feedLoader?.apply {
 								continuation = ""
 								ranked = when (which) {
-									1 -> ILoader.Ranked.OLDEST
-									else -> ILoader.Ranked.NEWEST
+									1 -> SourceLoader.Ranked.OLDEST
+									else -> SourceLoader.Ranked.NEWEST
 								}
 							}
 							articles.clear()
 							loadArticles()
-							ranked = when (feedlyLoader?.ranked) {
-								ILoader.Ranked.OLDEST -> "oldest"
+							ranked = when (feedLoader?.ranked) {
+								SourceLoader.Ranked.OLDEST -> "oldest"
 								else -> "newest"
 							}
 							true
@@ -177,10 +177,10 @@ class FeedView(val feed: Feed) : ViewManagerView() {
 								progressDialog.show()
 								val foundArticles = await {
 									FeedlyLoader().apply {
-										type = ILoader.FeedTypes.SEARCH
+										type = SourceLoader.FeedTypes.SEARCH
 										feedUrl = "feed/" + feed.url()
 										this.query = query.toString()
-									}.items(false)
+									}.items(context, false)
 								}
 								progressDialog.dismiss()
 								if (foundArticles.notNullAndEmpty()) openView(ArticleSearchResultView(articles = foundArticles!!).withTitle("Results for " + query.toString()))

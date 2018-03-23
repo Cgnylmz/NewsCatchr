@@ -35,7 +35,7 @@ import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 
 @SuppressLint("ViewConstructor")
-class FeedListView(val feeds: Array<Feed>? = null, val tags: Array<String>? = null) : ViewManagerView() {
+class FeedListView(val feeds: Array<Feed>? = null, val tags: List<String>? = null) : ViewManagerView() {
 	private var fragmentView: View? = null
 	private val recyclerOne: RecyclerView? by lazy { fragmentView?.find<RecyclerView>(R.id.basicrecyclerview_recycler) }
 	private var feedAdapter = ItemAdapter<FeedRecyclerItem>()

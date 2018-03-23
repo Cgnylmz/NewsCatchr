@@ -23,11 +23,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
-import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.extensions.notNullAndEmpty
 import jlelse.newscatchr.ui.layout.BasicRecyclerUI
 import jlelse.newscatchr.ui.recycleritems.ArticleRecyclerItem
 import jlelse.readit.R
+import jlelse.sourcebase.Article
 import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find

@@ -19,7 +19,6 @@
 package jlelse.newscatchr.backend.apis
 
 import com.afollestad.bridge.Bridge
-import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.helpers.readFromCache
 import jlelse.newscatchr.backend.helpers.saveToCache
@@ -34,26 +33,6 @@ class Feedly {
 	private val urlCount = "count="
 	private val urlRanked = "ranked="
 	private val urlQuery = "query="
-
-	fun streamIds(id: String?, count: Int? = null, continuation: String? = null, ranked: String? = null): Ids? = tryOrNull {
-		var url = "$urlBase/streams/ids?$urlStreamId%s"
-		if (count != null) url += "&$urlCount$count"
-		if (!continuation.isNullOrBlank()) url += "&$urlContinuation$continuation"
-		if (!ranked.isNullOrBlank()) url += "&$urlRanked$ranked"
-		Bridge.get(url, id).asClass(Ids::class.java)
-	}
-
-	fun mixIds(id: String?, count: Int? = null): Ids? = tryOrNull {
-		var url = "$urlBase/mixes/ids?$urlStreamId%s"
-		if (count != null) url += "&$urlCount$count"
-		Bridge.get(url, id).asClass(Ids::class.java)
-	}
-
-	fun entries(ids: List<String>): List<Article>? = tryOrNull {
-		if (ids.isNotEmpty()) {
-			Bridge.post("$urlBase/entries/.mget").body(ids).asClassList(Article::class.java)
-		} else null
-	}
 
 	fun feedSearch(query: String?, count: Int? = null, locale: String? = null, promoted: Boolean? = null, callback: (feeds: Array<Feed>?, related: Array<String>?) -> Unit) {
 		var feeds: Array<Feed>? = null
@@ -84,16 +63,9 @@ class Feedly {
 		callback(feeds, related)
 	}
 
-	fun articleSearch(id: String?, query: String?): ArticleSearch? = tryOrNull {
-		val url = "$urlBase/search/contents?$urlStreamId%s&$urlQuery%s&ct=feedly.desktop"
-		Bridge.get(url, id, query).asClass(ArticleSearch::class.java)
-	}
-
 	class Ids(var ids: Array<String>? = null, var continuation: String? = null)
 
 	class FeedSearch(var results: Array<Feed>? = null, var related: Array<String>? = null)
-
-	class ArticleSearch(var id: String? = null, var title: String? = null, var items: List<Article>? = null)
 
 }
 

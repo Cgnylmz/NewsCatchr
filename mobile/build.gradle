@@ -100,7 +100,13 @@ dependencies {
     // Other
     implementation project(':viewmanager')
     implementation project(':simplekos')
+    implementation (project(':source-base')) {
+        transitive = true
+    }
     implementation (project(':source-earl')) {
+        transitive = true
+    }
+    implementation (project(':source-feedly')) {
         transitive = true
     }
 }

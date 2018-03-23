@@ -53,6 +53,7 @@ object Feedly {
 	fun entries(ids: List<String>): List<Article>? = try {
 		if (ids.isNotEmpty()) "$base/entries/.mget".httpPost()
 				.body(Ason.serializeList(ids).toString())
+				.header("Content-Type" to "application/json")
 				.responseObject(ListDeserializer(Article::class.java)).third.component1()
 		else null
 	} catch (e: Exception) {
@@ -70,16 +71,16 @@ object Feedly {
 	}
 
 	data class Article(
-			var id: String,
-			var title: String?,
+			var id: String = "abc",
+			var title: String? = null,
 			@AsonName(name = "cannonical.$0.href")
 			var canonical: String? = null,
 			@AsonName(name = "content.content")
-			var content: String?,
+			var content: String? = null,
 			@AsonName(name = "summary.content")
-			var summary: String?,
-			var author: String?,
-			var published: Long,
+			var summary: String? = null,
+			var author: String? = null,
+			var published: Long = 0,
 			@AsonName(name = "alternate.$0.href")
 			var alternate: String? = null,
 			@AsonName(name = "origin.title")

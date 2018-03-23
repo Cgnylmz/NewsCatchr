@@ -18,9 +18,9 @@
 
 package jlelse.newscatchr.backend.helpers
 
-import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.url
+import jlelse.sourcebase.Article
 
 interface IDatabase {
 	var allFavorites: MutableList<Feed>
@@ -45,6 +45,6 @@ interface IDatabase {
 	fun deleteAllLastFeeds()
 
 	fun Feed?.safeFavorite(): Boolean = this != null && !this.url().isNullOrBlank()
-	fun Article?.safeBookmark(): Boolean = this != null && !this.url.isNullOrBlank()
+	fun Article?.safeBookmark(): Boolean = this != null && !this.link.isNullOrBlank()
 	fun Feed?.safeLastFeed(): Boolean = this != null && !this.url().isNullOrBlank()
 }

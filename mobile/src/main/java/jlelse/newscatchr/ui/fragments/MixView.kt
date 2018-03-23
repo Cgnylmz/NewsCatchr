@@ -29,14 +29,14 @@ import android.view.View
 import co.metalab.asyncawait.async
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
-import jlelse.newscatchr.backend.Article
-import jlelse.newscatchr.backend.loaders.FeedlyLoader
-import jlelse.newscatchr.backend.loaders.ILoader
+import jlelse.feedly.FeedlyLoader
 import jlelse.newscatchr.extensions.nothingFound
 import jlelse.newscatchr.ui.layout.RefreshRecyclerUI
 import jlelse.newscatchr.ui.recycleritems.ArticleRecyclerItem
 import jlelse.newscatchr.ui.views.SwipeRefreshLayout
 import jlelse.readit.R
+import jlelse.sourcebase.Article
+import jlelse.sourcebase.SourceLoader
 import jlelse.viewmanager.ViewManagerView
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
@@ -48,7 +48,7 @@ class MixView(val feedId: String) : ViewManagerView() {
 	private val articleAdapter = ItemAdapter<ArticleRecyclerItem>()
 	private val refreshOne: SwipeRefreshLayout? by lazy { fragmentView?.find<SwipeRefreshLayout>(R.id.refreshrecyclerview_refresh) }
 	private var articles = listOf<Article>()
-	private var feedlyLoader: FeedlyLoader? = null
+	private var sourceLoader: SourceLoader? = null
 
 	override fun onCreateView(): View? {
 		super.onCreateView()
@@ -56,8 +56,8 @@ class MixView(val feedId: String) : ViewManagerView() {
 		refreshOne?.setOnRefreshListener {
 			loadArticles(false)
 		}
-		feedlyLoader = FeedlyLoader().apply {
-			type = ILoader.FeedTypes.MIX
+		sourceLoader = FeedlyLoader().apply {
+			type = SourceLoader.FeedTypes.MIX
 			feedUrl = feedId
 		}
 		if (recyclerOne?.adapter == null) {
@@ -70,7 +70,7 @@ class MixView(val feedId: String) : ViewManagerView() {
 
 	private fun loadArticles(cache: Boolean = false) = async {
 		refreshOne?.showIndicator()
-		await { feedlyLoader?.items(cache)?.let { articles = it } }
+		await { sourceLoader?.items(context, cache)?.let { articles = it } }
 		if (!articles.isEmpty()) articleAdapter.setNewList(articles.map { ArticleRecyclerItem(article = it, fragment = this@MixView) })
 		else context.nothingFound { closeView() }
 		refreshOne?.hideIndicator()

@@ -22,10 +22,10 @@ package jlelse.newscatchr.backend.helpers
 
 import jlelse.kos.KeyObjectStore
 import jlelse.newscatchr.appContext
-import jlelse.newscatchr.backend.Article
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.url
 import jlelse.newscatchr.extensions.tryOrNull
+import jlelse.sourcebase.Article
 import java.util.*
 
 /**
@@ -52,7 +52,7 @@ class ObjectStoreDatabase : IDatabase {
 		get() = bookmarksStore.read(BOOKMARKS, Array<Article>::class.java)?.toMutableList()
 				?: mutableListOf()
 		set(value) {
-			tryOrNull { bookmarksStore.write<Array<Article>>(BOOKMARKS, value.filter { it.safeBookmark() }.distinctBy { it.url }.toTypedArray()) }
+			tryOrNull { bookmarksStore.write<Array<Article>>(BOOKMARKS, value.filter { it.safeBookmark() }.distinctBy { it.link }.toTypedArray()) }
 		}
 	override var allReadUrls: MutableList<String>
 		get() = readUrlsStore.read(READURLS, Array<String>::class.java)?.toMutableList()
@@ -96,18 +96,18 @@ class ObjectStoreDatabase : IDatabase {
 	override fun isFavorite(url: String?) = !url.isNullOrBlank() && allFavorites.any { it.url() == url }
 
 	override fun addBookmark(article: Article?) {
-		if (article?.safeBookmark() == true && !isBookmark(article.url)) allBookmarks = allBookmarks.apply {
+		if (article?.safeBookmark() == true && !isBookmark(article.link)) allBookmarks = allBookmarks.apply {
 			add(article)
 		}
 	}
 
 	override fun deleteBookmark(url: String?) {
 		if (!url.isNullOrBlank()) allBookmarks = allBookmarks.apply {
-			removeAll { it.url == url }
+			removeAll { it.link == url }
 		}
 	}
 
-	override fun isBookmark(url: String?) = !url.isNullOrBlank() && allBookmarks.any { it.url == url }
+	override fun isBookmark(url: String?) = !url.isNullOrBlank() && allBookmarks.any { it.link == url }
 
 	override fun addReadUrl(url: String?) {
 		if (!url.isNullOrBlank()) url?.let {
