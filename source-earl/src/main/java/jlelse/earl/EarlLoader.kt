@@ -9,14 +9,21 @@ class EarlLoader : SourceLoader() {
 
 	override fun items(context: Context, cache: Boolean): List<Article>? = when (type) {
 		SourceLoader.FeedTypes.FEED -> {
-			val feed = EarlGetter().getFeed(feedUrl, count).first
-			val articles = parseArticles(feed)
-			when (ranked) {
-				SourceLoader.Ranked.NEWEST -> articles?.sortedByDescending { it.time }
-				SourceLoader.Ranked.OLDEST -> articles?.sortedBy { it.time }
+			parseArticles(EarlGetter().getFeed(feedUrl, count).first)
+		}
+		SourceLoader.FeedTypes.SEARCH -> {
+			parseArticles(EarlGetter().getFeed(feedUrl, count).first)?.filter {
+				if (query != null)
+					it.title?.contains(query!!) ?: false || it.content?.contains(query!!) ?: false
+				else true
 			}
 		}
 		else -> null
+	}?.let {
+		when (ranked) {
+			SourceLoader.Ranked.NEWEST -> it.sortedByDescending { it.time }
+			SourceLoader.Ranked.OLDEST -> it.sortedBy { it.time }
+		}
 	}
 
 	override fun moreItems(context: Context): List<Article>? = null
