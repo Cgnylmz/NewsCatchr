@@ -32,8 +32,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.view.isInvisible
-import androidx.view.isVisible
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import com.afollestad.materialdialogs.MaterialDialog
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.apis.openUrl

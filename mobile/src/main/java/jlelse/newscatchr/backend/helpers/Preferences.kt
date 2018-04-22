@@ -19,7 +19,7 @@
 package jlelse.newscatchr.backend.helpers
 
 import android.content.SharedPreferences
-import androidx.content.edit
+import androidx.core.content.edit
 import jlelse.newscatchr.extensions.resStr
 import jlelse.newscatchr.extensions.sharedPref
 import jlelse.readit.R

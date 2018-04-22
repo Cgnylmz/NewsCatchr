@@ -39,7 +39,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN"
     implementation project(':commons')
     implementation project(':source-base')
-    implementation 'com.github.kittinunf.fuel:fuel-android:1.12.1'
+    implementation "com.github.kittinunf.fuel:fuel-android:$FUEL"
     implementation('com.afollestad:ason:1.4.16') {
         exclude group: 'org.json', module: 'json'
         exclude group: 'com.intellij', module: 'annotations'

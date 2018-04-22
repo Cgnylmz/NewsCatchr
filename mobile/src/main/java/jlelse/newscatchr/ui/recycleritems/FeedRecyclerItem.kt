@@ -26,7 +26,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.view.isVisible
+import androidx.core.view.isVisible
 import jlelse.newscatchr.backend.Feed
 import jlelse.newscatchr.backend.url
 import jlelse.newscatchr.database

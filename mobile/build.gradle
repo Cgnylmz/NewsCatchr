@@ -60,18 +60,18 @@ kotlin {
 }
 
 dependencies {
-    implementation 'com.mikepenz:fastadapter:3.2.4'
-    implementation 'com.mikepenz:fastadapter-extensions:3.2.4@aar'
+    implementation 'com.mikepenz:fastadapter:3.2.5'
+    implementation 'com.mikepenz:fastadapter-extensions:3.2.5@aar'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation('com.afollestad:ason:1.4.16') {
         exclude group: 'org.json', module: 'json'
         exclude group: 'com.intellij', module: 'annotations'
     }
-    implementation 'com.github.kittinunf.fuel:fuel-android:1.12.1'
-    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    implementation "com.github.kittinunf.fuel:fuel-android:$FUEL"
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
     implementation 'com.google.android:flexbox:0.3.2'
     implementation 'com.evernote:android-job:1.2.5'
-    implementation 'org.jsoup:jsoup:1.11.2'
+    implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'me.zhanghai.android.customtabshelper:library:1.0.4'
     implementation 'com.github.faruktoptas:FancyShowCaseView:1.0.0'
     // Support libraries
@@ -87,7 +87,7 @@ dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN"
     implementation 'co.metalab.asyncawait:asyncawait:1.0.0'
-    implementation 'androidx.core:core-ktx:0.2'
+    implementation 'androidx.core:core-ktx:0.3'
     // Anko
     implementation "org.jetbrains.anko:anko-sdk15:$ANKO"
     implementation "org.jetbrains.anko:anko-support-v4:$ANKO"
@@ -98,13 +98,7 @@ dependencies {
     implementation project(':commons')
     implementation project(':viewmanager')
     implementation project(':simplekos')
-    implementation (project(':source-base')) {
-        //transitive = true
-    }
-    implementation (project(':source-earl')) {
-        //transitive = true
-    }
-    implementation (project(':source-feedly')) {
-        //transitive = true
-    }
+    implementation project(':source-base')
+    implementation project(':source-earl')
+    implementation project(':source-feedly')
 }

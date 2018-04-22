@@ -26,8 +26,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.view.isGone
-import androidx.view.isVisible
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.database
 import jlelse.newscatchr.extensions.*

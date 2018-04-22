@@ -41,5 +41,5 @@ dependencies {
         transitive = true
     }
     implementation 'com.einmalfel:earl:1.2.0'
-    implementation 'com.github.kittinunf.fuel:fuel-android:1.12.1'
+    implementation "com.github.kittinunf.fuel:fuel-android:$FUEL"
 }

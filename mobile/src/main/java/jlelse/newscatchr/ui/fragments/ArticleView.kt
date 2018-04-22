@@ -29,8 +29,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.view.isGone
-import androidx.view.isVisible
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.google.android.flexbox.FlexboxLayout
 import jlelse.newscatchr.backend.apis.openUrl
 import jlelse.newscatchr.database
